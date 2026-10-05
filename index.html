@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#e43645">
+  <meta name="description" content="トレクエ。器具なしの自宅トレーニングを、少しずつ攻略しよう。">
+  <title>トレクエ — 家で、少しずつ強くなる。</title>
+  <link rel="icon" href="images/app-icon.png" type="image/png">
+  <link rel="stylesheet" href="styles.css?v=release-20261006-1">
+  <script src="storage.js?v=release-20261006-1" defer></script>
+  <script src="training.js?v=release-20261006-1" defer></script>
+  <script src="stages.js?v=release-20261006-1" defer></script>
+  <script src="progress.js?v=release-20261006-1" defer></script>
+  <script src="sound.js?v=release-20261006-1" defer></script>
+  <script src="workout.js?v=release-20261006-1" defer></script>
+  <script src="app.js?v=release-20261006-1" defer></script>
+  <script src="menu.js?v=release-20261006-1" defer></script>
+  <script src="supabase-config.js?v=release-20261006-1" defer></script>
+  <script src="supabase-client.js?v=release-20261006-1" defer></script>
+  <script src="auth.js?v=release-20261006-1" defer></script>
+  <script src="cloud-save.js?v=release-20261006-1" defer></script>
+</head>
+<body>
+  <header class="site-header"><button class="brand" id="brand" aria-label="タイトルに戻る"><img class="brand-mark" src="images/app-icon.png" alt="" width="36" height="36">トレクエ<span class="version">VER.1</span></button><div class="header-actions"><span class="header-note">おうちから、冒険を。</span><button class="settings-open" id="settings-open" aria-label="MENUを開く" aria-haspopup="dialog">☰ MENU</button></div></header>
+  <main id="app" tabindex="-1"></main>
+  <p id="storage-warning" class="storage-warning" role="status" hidden>このブラウザではデータを保存できません。保存を許可すると、次回もコースを引き継げます。</p>
+  <div id="toast" class="toast" role="status" hidden></div>
+  <dialog class="exercise-dialog" id="settings-dialog" aria-labelledby="settings-title"><div class="eyebrow">SETTING</div><h2 id="settings-title">設定</h2><div class="sound-setting"><span>WORKOUT SOUND</span><button id="sound-toggle" role="switch" aria-checked="true" aria-label="トレーニングの効果音">ON</button></div><p class="settings-note">開始前・終了前のカウントと、開始・終了を電子音でお知らせします。</p><div class="sound-setting"><span>ジャンプ系運動</span><button id="jump-toggle" role="switch" aria-checked="false" aria-label="ジャンプ系運動">OFF</button></div><p class="settings-note" id="jump-note">未設定の場合は静かな運動のみです。</p><button class="primary" id="settings-close">閉じる</button></dialog>
+  <dialog class="exercise-dialog menu-dialog" id="menu-dialog" aria-labelledby="menu-title"><div class="menu-heading"><div><div class="eyebrow">YOUR QUEST GUIDE</div><h2 id="menu-title" tabindex="-1">MENU</h2></div><button class="menu-close" id="menu-close" aria-label="MENUを閉じる">×</button></div><div id="menu-content"></div><button class="secondary" id="menu-map">ステージマップへ戻る</button></dialog>
+  <noscript>トレクエを使うには、ブラウザのJavaScriptを有効にしてください。</noscript>
+</body>
+</html>

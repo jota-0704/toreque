@@ -1,0 +1,455 @@
+:root{--red:#e43645;--red-dark:#b71f31;--ink:#282b32;--muted:#737680;--line:#e8e9ec;--pale:#fff1f2;font-family:system-ui,-apple-system,"Segoe UI","Noto Sans JP",sans-serif;color:var(--ink);background:#fff;font-synthesis:none}
+*{box-sizing:border-box}body{margin:0}button{font:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}button:focus-visible{outline:3px solid #252b35;outline-offset:5px}button:disabled{cursor:default}button[hidden],[hidden]{display:none!important}h1,p{margin:0}h1{font-size:clamp(1.6rem,4.5vw,2rem);line-height:1.65;letter-spacing:.02em}button{touch-action:manipulation}.site-header{height:88px;max-width:1080px;margin:auto;padding:0 30px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line)}.brand{display:flex;align-items:center;gap:10px;border:0;background:none;font-size:1.35rem;font-weight:900;color:var(--ink);padding:8px 0}.brand-mark{display:block;width:36px;height:36px;flex-shrink:0;object-fit:contain}.version{font-size:.65rem;color:var(--muted);letter-spacing:.08em;margin-left:5px}.header-note{font-size:.85rem;color:var(--muted)}#app{outline:none;max-width:560px;margin:0 auto;padding:0 24px}.eyebrow{font-size:.75rem;font-weight:800;letter-spacing:.16em;color:var(--red)}.title-screen{text-align:center;min-height:calc(100svh - 88px);display:flex;flex-direction:column;align-items:center;padding:60px 0 32px}.logo-space{width:204px;height:204px;display:grid;place-items:center;margin:34px 0 24px}.logo-space img{display:block;width:100%;height:100%;object-fit:contain}.app-name{font-size:3.2rem;font-weight:950;letter-spacing:.07em;line-height:1.3}.tagline{font-size:1.25rem;font-weight:750;margin-top:18px}.intro{font-size:.95rem;color:var(--muted);line-height:1.9;margin:20px 0 34px}.primary{width:100%;min-height:60px;border:0;border-radius:17px;background:var(--red);color:white;font-weight:800;box-shadow:0 5px 0 var(--red-dark);padding:16px 20px;transition:transform .15s,background .15s}.primary:hover:not(:disabled){background:#d9293b}.primary:active:not(:disabled){transform:translateY(3px);box-shadow:0 2px 0 var(--red-dark)}.primary:disabled{background:#e9eaed;color:#999da5;box-shadow:0 5px 0 #d9dbe0}.title-screen .primary{max-width:360px}.title-foot{display:flex;align-items:center;gap:16px;margin-top:30px;font-size:.8rem;color:var(--muted)}.title-foot i{width:4px;height:4px;border-radius:50%;background:#bbb}.question-screen{padding:30px 0 35px}.progress-row{display:flex;align-items:center;gap:16px;margin-bottom:48px}.back{border:0;background:none;font-size:2rem;color:var(--muted);width:44px;min-height:44px}.progress{height:12px;flex:1;background:#eff0f2;border-radius:20px;overflow:hidden}.progress span{height:100%;display:block;background:var(--red);border-radius:20px;transition:width .3s}.question-count{font-size:.8rem;white-space:nowrap;color:var(--muted);font-weight:700}.question-screen h1{margin-top:14px}.muted{color:var(--muted)}.question-screen>p{font-size:.9rem;margin-top:12px}.options{display:flex;flex-direction:column;gap:12px;margin:30px 0}.option{display:flex;align-items:center;gap:16px;text-align:left;min-height:64px;width:100%;padding:15px 18px;background:#fff;border:2px solid var(--line);border-radius:17px;box-shadow:0 3px 0 #eceef1;font-weight:650;color:var(--ink)}.option:hover{border-color:#f3a1ab}.option.selected{background:var(--pale);border-color:var(--red);box-shadow:0 3px 0 #f5abb5;color:var(--red-dark)}.option-number{font-size:.75rem;color:#999da5;font-weight:700}.choice-dot{margin-left:auto;flex-shrink:0;width:22px;height:22px;border:2px solid #dfe1e6;border-radius:50%}.selected .choice-dot{border-color:var(--red);background:var(--red);box-shadow:inset 0 0 0 4px white}.small-note{text-align:center;font-size:.75rem!important;color:var(--muted);margin-top:24px!important}.course-screen{padding:64px 0 40px;text-align:center}.complete-mark{height:90px;width:90px;display:grid;place-items:center;margin:0 auto 30px;background:var(--pale);color:var(--red);border-radius:28px;font-size:3rem;font-weight:800;box-shadow:0 5px 0 #ffdce1}.course-screen h1{margin:14px 0}.course-screen>.muted{font-size:.9rem;line-height:1.8}.course-details{margin:34px 0;border:1px solid var(--line);border-radius:20px;text-align:left;padding:6px 22px}.course-details div{padding:17px 0;display:flex;justify-content:space-between;gap:16px;border-bottom:1px solid var(--line)}.course-details div:last-child{border:0}.course-details dt{font-size:.85rem;color:var(--muted);flex-shrink:0}.course-details dd{margin:0;font-size:.9rem;font-weight:750;text-align:right}.loading-screen{padding-top:100px}.spinner{margin:0 auto 40px;width:80px;height:80px;border:7px solid var(--pale);border-top-color:var(--red);border-radius:50%;animation:spin 1s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}.home-screen{padding:24px 0 36px}.stats{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid var(--line);border-radius:18px;padding:20px 0}.stats>div{text-align:center;border-right:1px solid var(--line)}.stats>div:last-child{border:0}.stat-label{display:block;font-size:.65rem;font-weight:800;letter-spacing:.06em;color:var(--muted);margin-bottom:8px}.stats strong{font-size:1.05rem}.stats small{font-size:.75rem}.red{color:var(--red)}.chapter{position:relative;display:flex;justify-content:space-between;align-items:center;background:var(--red);color:white;margin:26px 0 30px;padding:26px 24px;border-radius:22px;overflow:hidden}.chapter .eyebrow{color:#ffe1e5}.chapter h1{font-size:1.4rem;margin-top:7px}.chapter p{font-size:.8rem;margin-top:9px;color:#fff1f2}.chapter-number{font-size:4.5rem;font-weight:900;color:#ffffff20;letter-spacing:-.1em;margin-left:8px}.map-header{display:flex;justify-content:space-between;font-size:.8rem;font-weight:750;padding:0 6px}.stage-map{position:relative;list-style:none;padding:28px 0 0;margin:0;overflow:hidden}.stage{position:relative;width:100%;min-height:202px;display:flex;flex-direction:column;align-items:center;text-align:center;padding-top:4px;isolation:isolate}.stage:after{content:"";position:absolute;top:115px;left:50%;width:100px;height:90px;border-left:6px dotted #e1e3e8;border-bottom:6px dotted #e1e3e8;border-bottom-left-radius:55px;z-index:-1}.stage:nth-child(2):after{left:calc(50% - 190px);width:190px;border-left:0;border-right:6px dotted #e1e3e8;border-bottom-left-radius:0;border-bottom-right-radius:65px}.stage:nth-child(3):after{width:90px}.stage:nth-child(4):after{width:100px}.stage:last-child:after{display:none}.stage.right{left:80px}.stage.left{left:-80px}.stage-day{font-size:.75rem;font-weight:900;letter-spacing:.07em;color:#9499a3;margin-bottom:10px}.active .stage-day{color:var(--red)}.stage-node{position:relative;display:grid;place-items:center;width:88px;height:80px;border-radius:50%;border:7px solid #f1f2f5;background:#e2e4e9;color:#fff;font-size:1.7rem;box-shadow:0 7px 0 #cdd0d8;margin-bottom:18px}.active .stage-node{background:var(--red);border-color:#ffd8dd;box-shadow:0 7px 0 var(--red-dark),0 0 0 6px #fff1f2;color:white}.active .stage-node:hover{transform:translateY(-2px)}.locked .stage-node>span{display:none}.lock-icon{width:27px;height:27px;fill:none;stroke:#89919e;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}.checkpoint .stage-node{border-radius:23px;transform:rotate(-8deg)}.stage-title{font-size:.95rem;color:#7d838e;max-width:190px;line-height:1.7}.active .stage-title{color:var(--ink)}.stage-status{font-size:.7rem;color:#989da6;margin-top:6px;background:white;padding:2px 8px}.active .stage-status{color:var(--red);background:var(--pale);border-radius:8px}.map-end{text-align:center;font-size:.8rem;color:var(--muted);margin-top:12px}.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);width:calc(100% - 40px);max-width:480px;background:var(--ink);color:#fff;line-height:1.8;font-size:.9rem;padding:18px 22px;border-radius:18px;box-shadow:0 8px 30px #0002;z-index:10}.storage-warning{max-width:560px;margin:16px auto;padding:16px 24px;font-size:.85rem;color:var(--red-dark);background:var(--pale);line-height:1.8}
+@media(min-width:800px){.title-screen{padding-top:55px}.question-screen{padding-top:40px}.home-screen{padding-top:36px}.site-header{height:96px}.title-screen{min-height:calc(100svh - 96px)}}
+@media(max-width:400px){.site-header{padding:0 20px;height:72px}.header-note{display:none}#app{padding:0 20px}.title-screen{padding-top:32px;min-height:calc(100svh - 72px)}.logo-space{width:170px;height:170px;margin:26px 0 22px}.app-name{font-size:2.8rem}.tagline{font-size:1.1rem}.stage.right{left:60px}.stage.left{left:-60px}.stage:after{width:60px}.stage:nth-child(2):after{left:calc(50% - 120px);width:120px}.stage:nth-child(3):after,.stage:nth-child(4):after{width:60px}.course-details{padding:6px 15px}.course-details div{gap:10px}.course-details dt{font-size:.75rem}.chapter{padding:22px 18px}.chapter h1{font-size:1.2rem}.chapter-number{font-size:3.5rem}.progress-row{margin-bottom:32px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+
+/* ホームの微調整。初回質問・タイトルの見た目には影響させません。 */
+.header-actions{display:flex;gap:18px;align-items:center}
+.settings-open{min-width:48px;min-height:44px;border:1px solid var(--line);border-radius:13px;background:#fff;color:var(--muted);font-size:.85rem;font-weight:700}
+.sound-setting{display:flex;align-items:center;justify-content:space-between;gap:15px;font-size:.9rem;font-weight:800;padding:18px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+#sound-toggle{min-width:76px;min-height:48px;border:2px solid var(--red);border-radius:16px;background:var(--pale);color:var(--red-dark);font-weight:850}
+#sound-toggle[aria-checked="false"]{border-color:var(--line);background:#f2f3f5;color:var(--muted)}
+.settings-note{font-size:.85rem!important;margin:20px 0 26px}
+.pause-workout{align-self:center;min-height:44px;min-width:100px;border:1px solid var(--line);border-radius:14px;background:white;color:var(--muted);margin-top:20px;padding:10px 16px;font-size:.85rem;font-weight:750}
+.pause-workout[aria-pressed="true"]{color:var(--red-dark);background:var(--pale);border-color:var(--red)}
+.timer-signal{display:block;font-size:clamp(1.7rem,7vw,2.8rem);line-height:1.5;overflow-wrap:anywhere}
+.count-pop{display:inline-block;animation:count-pop .22s ease-out}
+.completion-day{text-align:center;margin-top:12px}
+.xp-reward{margin:22px 0 10px;font-size:2.5rem;font-weight:900;color:var(--red);animation:count-pop .35s ease-out}
+.rating-section h2{font-size:1.2rem;line-height:1.7;margin:0 0 20px}
+.rating-options{display:grid;gap:14px}
+.rating-options .option{min-height:68px;font-size:1.1rem}
+.reward-total{margin:28px 0;color:var(--red-dark);font-weight:850}
+.level-up{margin:20px 0 32px;padding:20px;background:var(--pale);border-radius:24px;animation:count-pop .35s ease-out}
+.home-screen .cleared .stage-node{background:var(--red-dark);border-color:#ffc5ce}
+.home-screen .cleared .stage-status{font-size:.7rem}
+.home-screen .active.checkpoint .stage-node{background:var(--red-dark);border-color:#ffbdc8;box-shadow:0 8px 0 #86182c,0 0 0 6px var(--pale);font-size:2.2rem}
+.home-screen .active.checkpoint .stage-node>span{transform:rotate(8deg)}
+.home-screen .active.checkpoint .stage-day{color:var(--red-dark)}
+.home-screen .active.checkpoint .stage-node:active{transform:rotate(-8deg) translateY(4px);box-shadow:0 4px 0 #86182c,0 0 0 6px var(--pale)}
+.checkpoint-emblem{margin:0 auto 28px;width:110px;height:100px;display:grid;place-items:center;background:var(--pale);border:4px solid #ffbdc8;border-radius:30px;color:var(--red-dark);font-size:3rem;transform:rotate(-8deg);box-shadow:0 6px 0 #ffd2da}
+.checkpoint-note{margin:24px 0 36px}
+.checkpoint-screen{padding:38px 0;text-align:center}
+.checkpoint-screen h1{font-size:1.7rem}
+.chapter-review-heading{margin:28px 0 32px;padding:22px 16px;border-radius:22px;background:var(--pale)}
+.chapter-review-heading h2{font-size:1.15rem;line-height:1.8;margin:10px 0 0}
+.review-label{font-size:.85rem;letter-spacing:.12em;color:var(--red-dark);margin:0 0 18px}
+.chapter-stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:0}
+.chapter-stats>div{border:2px solid var(--line);border-radius:20px;padding:20px 10px;box-shadow:0 3px 0 #eceef1}
+.chapter-stats dt{font-size:.75rem;font-weight:750;color:var(--muted);line-height:1.7}
+.chapter-stats dd{margin:10px 0 0;font-size:1.5rem;font-weight:900;color:var(--red-dark);overflow-wrap:anywhere}
+.review-note{font-size:.75rem;color:var(--muted);line-height:1.8;margin:18px 0;text-align:left}
+.chapter-ratings{margin-top:28px;text-align:left;border:1px solid var(--line);border-radius:22px;padding:20px}
+.chapter-ratings h2{font-size:1rem;margin:0 0 14px}
+.chapter-ratings>div{display:flex;justify-content:space-between;gap:12px;font-size:.9rem;line-height:1.8;padding:12px 0;border-top:1px solid var(--line)}
+.chapter-ratings strong{white-space:nowrap}
+.growth-message{margin:24px 0 30px;line-height:1.9;font-size:1rem;font-weight:700}
+.checkpoint-screen>.secondary{width:100%;margin-top:20px}
+.chapter-complete{position:relative;overflow:hidden}
+.chapter-complete .checkpoint-emblem{background:#fff8df;border-color:#e4bd63;color:#ac7820;box-shadow:0 7px 0 #f0d799;animation:count-pop .4s ease-out}
+.chapter-complete .celebration i:nth-child(even){background:#ddb34d}
+.unlocked-review{margin:26px 0;padding:22px;border:2px solid #f0d799;border-radius:24px;background:#fffbed;text-align:left}
+.unlocked-review h2{font-size:1.15rem;color:#805c16;margin:0 0 14px}
+.unlocked-review p{font-size:.9rem;line-height:1.8}
+.unlocked-review ul{list-style:none;padding:0;margin:18px 0 0}
+.unlocked-review li{padding:12px 0;border-top:1px solid #f0e4c3;font-size:1rem;font-weight:750}
+.checkpoint-next{margin:14px 0 32px}
+@media(max-width:400px){.chapter-ratings{padding:16px}.chapter-stats dd{font-size:1.3rem}}
+@keyframes count-pop{from{transform:scale(.85)}to{transform:scale(1)}}
+.home-screen .stats{border-radius:22px;box-shadow:0 4px 0 #eceef2;padding:18px 0;border-bottom-width:2px}
+.home-screen .stats strong{display:inline-block;padding:5px 8px;border-radius:10px;background:var(--pale);color:var(--red-dark)}
+.home-screen .stat-label{font-size:.75rem;letter-spacing:.02em}
+.home-screen .chapter{border-radius:26px;box-shadow:0 5px 0 var(--red-dark)}
+.home-screen .stage{min-height:188px}
+.home-screen .stage-node{width:100px;height:92px;box-shadow:0 8px 0 #cdd0d8;transition:transform .15s,box-shadow .15s}
+.home-screen .active .stage-node{box-shadow:0 8px 0 var(--red-dark),0 0 0 7px var(--pale)}
+.home-screen .active .stage-node:active{transform:translateY(5px);box-shadow:0 3px 0 var(--red-dark),0 0 0 7px var(--pale)}
+.home-screen .lock-icon{width:30px;height:30px}
+.home-screen .stage:after{top:119px;height:73px}
+.home-screen .checkpoint .stage-node{width:118px;height:98px;border-radius:32px 32px 40px 40px;border-color:#fce0e4;background:#f9ecee;box-shadow:0 8px 0 #dfc6cd;transform:rotate(-8deg)}
+.home-screen .checkpoint .lock-icon{stroke:#a37983;transform:rotate(8deg)}
+.home-screen .checkpoint .stage-day{color:#a37983}
+.home-screen .stage-title{max-width:180px}
+
+/* DAY 1詳細と、種目のやり方。 */
+/* 実行画面：一度に1種目、操作は下部にまとめます。 */
+.workout-screen{padding:24px 0 38px;min-height:calc(100svh - 88px);display:flex;flex-direction:column}
+.workout-top{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:16px;font-size:.85rem}
+.exit-workout{width:44px;height:44px;border:2px solid var(--line);border-radius:14px;background:white;color:var(--muted);font-size:1.7rem}
+.workout-body{flex:1;text-align:center;padding:42px 0 30px}
+.workout-body h1{margin:12px 0;font-size:clamp(1.7rem,6vw,2.3rem);overflow-wrap:anywhere}
+.workout-amount{font-size:clamp(4rem,19vw,6rem);font-weight:900;color:var(--red);line-height:1.2;margin:34px 0 20px;font-variant-numeric:tabular-nums}
+.workout-amount small{font-size:1.15rem;margin-left:8px;display:inline-block}
+.set-label{font-size:1rem;font-weight:850;line-height:1.8}
+.set-message{min-height:2em;margin-top:18px;font-size:.9rem;line-height:1.8;color:var(--muted)}
+.workout-actions{display:grid;gap:18px}
+.workout-actions .primary{border-radius:20px}
+.rest-title{letter-spacing:.14em;color:var(--red)}
+.next-exercise{border:2px solid #ffdde1;border-radius:24px;padding:24px 16px;margin-top:30px;background:var(--pale)}
+.next-exercise h2{font-size:1.4rem;line-height:1.7;margin:12px 0}
+.complete-day{font-weight:800;margin:26px 0 14px}
+.workout-complete{position:relative;overflow:hidden}
+.workout-complete h1{line-height:1.35}
+.exit-dialog .primary{margin:10px 0 20px}.exit-dialog .secondary{width:100%}
+.celebration{position:absolute;inset:0;pointer-events:none}
+.celebration i{position:absolute;top:8px;left:12%;width:9px;height:18px;background:var(--red);border-radius:3px;animation:confetti 1.2s ease-out both}
+.celebration i:nth-child(2){left:27%;animation-delay:.1s;background:#f4a3af}.celebration i:nth-child(3){left:43%;animation-delay:.15s}.celebration i:nth-child(4){left:60%;animation-delay:.05s;background:#f4a3af}.celebration i:nth-child(5){left:76%;animation-delay:.2s}.celebration i:nth-child(6){left:90%;background:#f4a3af}
+@keyframes confetti{from{opacity:1;transform:translateY(-10px) rotate(0)}to{opacity:0;transform:translateY(230px) rotate(230deg)}}
+@media(max-width:400px){.workout-screen{min-height:calc(100svh - 72px)}.workout-body{padding-top:30px}}
+.personalized-badge{display:inline-block;margin:0 0 10px;padding:5px 10px;border-radius:10px;background:var(--pale);color:var(--red-dark);font-size:.8rem;font-weight:750}
+.focus-badge{display:inline-block;vertical-align:middle;margin-left:7px;padding:2px 7px;background:var(--red);color:white;font-size:.7rem;border-radius:7px;white-space:nowrap}
+.menu-context{font-size:.8rem!important;line-height:1.8;color:var(--muted);margin-top:9px}
+.detail-screen{padding:30px 0 38px}
+.detail-heading{background:var(--pale);border:1px solid #ffdde1;border-radius:26px;padding:24px;box-shadow:0 4px 0 #ffe1e5}
+.detail-heading h1{margin-top:8px}
+.workout-heading{margin:30px 0 20px}
+.workout-heading h2{font-size:1.25rem;margin:0 0 8px}
+.workout-heading p{font-size:.9rem}
+.exercise-list{display:grid;gap:16px}
+.exercise-card{width:100%;display:flex;align-items:center;gap:14px;text-align:left;padding:20px 18px;border:2px solid var(--line);border-radius:22px;background:white;color:var(--ink);box-shadow:0 5px 0 #e4e6eb;transition:transform .15s,border-color .15s,box-shadow .15s}
+.exercise-card:hover{border-color:#f3a1ab}
+.exercise-card:active{transform:translateY(3px);box-shadow:0 2px 0 #e4e6eb}
+.exercise-number{display:grid;place-items:center;width:36px;height:36px;flex-shrink:0;border-radius:12px;background:var(--pale);color:var(--red);font-size:.8rem;font-weight:800}
+.exercise-info{display:flex;flex-direction:column;gap:7px;min-width:0}
+.exercise-info strong{font-size:1rem;line-height:1.6}
+.exercise-area{font-size:.85rem;color:var(--muted)}
+.exercise-amount{font-size:1rem;font-weight:800}
+.exercise-help{font-size:.75rem;font-weight:700;color:var(--red-dark);margin-left:auto;flex-shrink:0;padding:7px 8px;border-radius:10px;background:var(--pale)}
+.detail-actions{display:grid;gap:18px;margin-top:30px}
+.detail-actions .primary,.exercise-dialog .primary{border-radius:20px;box-shadow:0 6px 0 var(--red-dark)}
+.detail-actions .primary:active,.exercise-dialog .primary:active{box-shadow:0 2px 0 var(--red-dark);transform:translateY(4px)}
+.secondary{min-height:54px;border:2px solid var(--line);background:white;border-radius:18px;font-weight:750;color:var(--ink);box-shadow:0 3px 0 #eceef1}
+.secondary:active{transform:translateY(2px);box-shadow:0 1px 0 #eceef1}
+.exercise-dialog{width:calc(100% - 32px);max-width:480px;max-height:calc(100svh - 48px);overflow:auto;border:0;border-radius:26px;padding:28px;color:var(--ink);box-shadow:0 18px 60px #0003}
+.exercise-dialog::backdrop{background:#282b3299}
+.exercise-dialog h2{font-size:1.5rem;line-height:1.6;margin:12px 0 24px}
+.exercise-dialog h3{font-size:.9rem;margin:0 0 10px}
+.exercise-dialog p{font-size:1rem;line-height:1.9}
+.point-box{background:var(--pale);border-radius:18px;padding:18px;margin:22px 0 26px}
+.point-box h3{color:var(--red-dark);letter-spacing:.08em}
+@media(max-width:400px){.home-screen .stats strong{font-size:.9rem;padding:5px}.home-screen .stat-label{font-size:.7rem}.exercise-card{gap:10px;padding:18px 12px}.exercise-help{font-size:.7rem;padding:6px}.exercise-number{width:30px;height:30px}.exercise-dialog{padding:24px}}
+/* ホームUI Ver.2：他の画面には適用しません。 */
+.home-v2 .stats{gap:0;overflow:hidden;background:#fff}
+.home-v2 .stat-label{font-size:.65rem}.home-v2 .stat-label span{color:var(--red);margin-right:3px}
+.home-v2 .stats strong{background:none;padding:2px;font-size:1rem}
+.home-v2 .stats .xp-track{grid-column:1/-1;border:0;border-top:1px solid var(--line);margin:16px 16px 0;padding-top:12px;text-align:left}
+.xp-caption{display:flex;justify-content:space-between;font-size:.7rem;color:var(--muted);font-weight:700;margin-bottom:8px}
+.mini-progress{height:7px;background:#eeeef1;border-radius:10px;overflow:hidden}
+.mini-progress>span{display:block;height:100%;border-radius:inherit;background:var(--red);transition:width .4s ease}
+.home-v2 .chapter{margin:24px 0;padding:24px;min-height:180px;background:linear-gradient(120deg,#ec344a,#ce253c);border:1px solid #db253c}
+.home-v2 .chapter-copy{width:100%;position:relative;z-index:1}
+.home-v2 .chapter-number{position:absolute;right:14px;top:4px;font-size:6rem;color:#ffffff18;letter-spacing:-.07em}
+.chapter-progress-label{margin-top:20px;font-size:.7rem;letter-spacing:.08em;font-weight:900}
+.home-v2 .chapter .mini-progress{margin-top:8px;background:#ffffff35;max-width:320px}
+.home-v2 .chapter .mini-progress>span{background:#fff}
+.adventure-map{position:relative;margin-top:12px;border-radius:28px;background:linear-gradient(180deg,#fff 0%,#fffaf8 45%,#fff 100%);overflow:hidden;isolation:isolate}
+.home-v2 .stage-map{padding:0;overflow:visible;z-index:1}
+.home-v2 .stage{height:190px;min-height:190px;left:0;padding:0;display:block;text-align:left;isolation:auto}
+.home-v2 .stage:after{top:104px;left:26%;width:40%;height:190px;border:0;border-left:7px dotted #e7c9c9;border-bottom:7px dotted #e7c9c9;border-radius:0 0 0 80px;z-index:-1}
+.home-v2 .stage:nth-child(2):after{left:26%;border-left:0;border-right:7px dotted #e7c9c9;border-radius:0 0 80px 0}
+.home-v2 .stage:nth-child(3):after{width:0;border-bottom:0;border-radius:0}
+.home-v2 .stage:nth-child(4):after{width:40%}
+.home-v2 .stage:last-child:after{display:none}
+.stage-stop{position:absolute;left:26%;top:54px;transform:translateX(-50%);width:100px;height:100px}
+.home-v2 .right .stage-stop{left:66%}
+.home-v2 .stage-node{width:100px;height:92px;margin:0;border-width:6px;position:relative;z-index:1}
+.home-v2 .stage-info{position:absolute;left:calc(26% + 64px);right:8px;top:69px;display:flex;flex-direction:column;align-items:flex-start;gap:5px}
+.home-v2 .right .stage-info{left:8px;right:calc(34% + 64px);align-items:flex-end;text-align:right}
+.home-v2 .stage-day{margin:0;font-size:.7rem;letter-spacing:.09em}
+.home-v2 .stage-title{font-size:.9rem;line-height:1.6;max-width:none;color:#828793;overflow-wrap:anywhere}
+.home-v2 .active .stage-title{color:var(--ink)}
+.home-v2 .stage-status{margin:0;padding:3px 8px;border-radius:7px;font-weight:850;font-size:.65rem;letter-spacing:.07em}
+.home-v2 .cleared .stage-node{background:#b95463;border-color:#f7d9dd;box-shadow:0 7px 0 #883d49;color:#fff}
+.home-v2 .cleared .stage-status{color:#a44b59;background:#fff0f2}
+.home-v2 .current .stage-node{width:108px;height:100px;margin:-4px;border-color:#ffd2d9;background:var(--red);box-shadow:0 8px 0 var(--red-dark),0 0 0 6px #fff1f3;animation:map-pulse 2.8s ease-in-out infinite}
+.home-v2 .current .stage-status{background:var(--red);color:white}
+.location-bubble{position:absolute;left:50%;top:-41px;transform:translateX(-50%);white-space:nowrap;background:#fff;color:var(--red-dark);border:2px solid var(--red);border-radius:10px;padding:6px 11px;font-size:.7rem;font-weight:900;box-shadow:0 3px 0 #f9d7dd;z-index:2}
+.location-bubble:after{content:"";position:absolute;bottom:-6px;left:calc(50% - 5px);width:8px;height:8px;transform:rotate(45deg);background:#fff;border-right:2px solid var(--red);border-bottom:2px solid var(--red)}
+.mascot-space{position:absolute;left:-18px;top:102px;width:32px;height:32px;pointer-events:none}
+.stage-lock-label .lock-icon{width:14px;height:14px;stroke:#a3a7af}
+.home-v2 .locked .stage-node{background:#e4e6eb;border-color:#f2f3f5;box-shadow:0 6px 0 #ccd0d8;animation:none}
+.home-v2 .checkpoint .stage-stop{width:112px}
+.home-v2 .checkpoint .stage-node{width:112px;height:104px;border-radius:28px 28px 40px 40px;transform:rotate(-6deg);background:#fff4d8;border-color:#ead39c;box-shadow:0 8px 0 #c9ae70,0 12px 20px #b5943220;color:#a97c23;font-size:2.3rem}
+.home-v2 .checkpoint .stage-node>span{transform:rotate(6deg)}
+.home-v2 .checkpoint .stage-day{color:#986d20;font-size:.67rem;letter-spacing:.06em}
+.home-v2 .checkpoint .lock-icon{stroke:#ad996e;transform:rotate(6deg)}
+.home-v2 .checkpoint.cleared .stage-status{color:#896219;background:#fff2cf}
+.home-v2 .checkpoint.current .stage-node{border-color:#edc66c;background:#ffedb8;animation:map-pulse 2.8s ease-in-out infinite}
+/* 押下中だけ沈む。ボスの傾きは維持し、ロック中のボタンは対象外。 */
+.home-screen.home-v2 .active .stage-node:is(:active,.pressed):not(:disabled){animation:none;transition:transform .06s,box-shadow .06s;transform:translateY(3px) scale(.97);box-shadow:0 3px 0 var(--red-dark),0 0 0 7px var(--pale)}
+.home-screen.home-v2 .active.cleared .stage-node:is(:active,.pressed):not(:disabled){box-shadow:0 3px 0 #883d49}
+.home-screen.home-v2 .active.checkpoint .stage-node:is(:active,.pressed):not(:disabled){transform:translateY(3px) rotate(-6deg) scale(.97);box-shadow:0 3px 0 #c9ae70,0 6px 12px #b5943215}
+.map-scenery{position:absolute;inset:0;z-index:-2;pointer-events:none;overflow:hidden}
+.map-scenery img{display:block;width:100%;height:950px;object-fit:fill;user-select:none}
+@keyframes map-pulse{0%,100%{outline:0 solid #ef334b00}50%{outline:7px solid #ef334b12}}
+@media(max-width:400px){.home-v2 .stats strong{font-size:.85rem}.home-v2 .stat-label{font-size:.6rem}.home-v2 .chapter{padding:22px 18px}.home-v2 .stage-title{font-size:.82rem}.home-v2 .stage-info{left:calc(26% + 60px)}.home-v2 .right .stage-info{right:calc(34% + 60px)}.home-v2 .stage-day{font-size:.64rem}.home-v2 .checkpoint .stage-day{font-size:.6rem}}
+@media(prefers-reduced-motion:reduce){.home-v2 .current .stage-node,.home-v2 .checkpoint.current .stage-node{animation:none}.home-v2 .mini-progress>span{transition:none}}
+/* キャラクターは装飾。クリック対象は丸いステージボタンのままです。 */
+.home-v2 .stage{height:260px;min-height:260px}
+.home-v2 .stage:after{height:260px}
+.home-v2 .map-scenery img{height:1300px}
+.home-v2 .map-enemy{position:absolute;right:12px;top:165px;width:92px;margin:0;text-align:center;pointer-events:none;user-select:none}
+.home-v2 .right .map-enemy{right:auto;left:8px}
+.home-v2 .map-enemy img{display:block;width:100%;height:auto;filter:drop-shadow(0 3px 2px #623b3520);transition:opacity .2s}
+.home-v2 .map-enemy.goblin{width:98px}
+.home-v2 .map-enemy.orc{width:104px}
+.home-v2 .map-enemy.boss{width:126px;top:155px;right:6px}
+.home-v2 .map-enemy.boss:before{content:"";position:absolute;inset:5px 8px 25px;background:radial-gradient(ellipse,#efd18f45,transparent 70%);z-index:-1}
+.home-v2 .map-enemy.boss img{filter:drop-shadow(0 4px 3px #aa772330)}
+.home-v2 .map-enemy figcaption{font-size:.6rem;font-weight:700;color:#86808a;line-height:1.5;margin-top:1px;white-space:nowrap}
+.home-v2 .map-enemy.boss figcaption{color:#96742d}
+.home-v2 .locked .map-enemy img{opacity:.4;filter:grayscale(.55) brightness(.65)}
+.home-v2 .locked .map-enemy figcaption{opacity:.65}
+.home-v2 .locked .map-enemy.boss:before{opacity:.3}
+.home-v2 .cleared .map-enemy img{opacity:.5;transform:scale(.9) rotate(-6deg)}
+.home-v2 .cleared .map-enemy.boss:before{opacity:.15}
+.enemy-clear{display:block;font-size:.57rem;letter-spacing:.05em;color:var(--red-dark);font-weight:850}
+.home-v2 .map-hero{position:absolute;left:6px;top:183px;width:66px;pointer-events:none;user-select:none}
+.home-v2 .right .map-hero{left:auto;right:4px}
+.home-v2 .map-hero img{display:block;width:100%;height:auto;filter:drop-shadow(0 3px 2px #743c3620);animation:hero-idle 3s ease-in-out infinite}
+.home-v2 .map-hero .location-bubble{left:50%;top:-34px;padding:5px 7px;font-size:.62rem}
+.home-v2 .checkpoint .map-hero{left:4px}
+@keyframes hero-idle{0%,100%{transform:translateY(0)}50%{transform:translateY(-2px)}}
+@media(max-width:350px){.home-v2 .map-hero{width:58px;left:4px}.home-v2 .right .map-hero{left:auto;right:4px}.home-v2 .map-enemy.boss{width:116px}}
+@media(prefers-reduced-motion:reduce){.home-v2 .map-hero img{animation:none}}
+/* トレーニングUI Ver.2：進行・計測処理とは独立した表示設定。 */
+.workout-v2{min-height:calc(100svh - 96px);padding:20px 0 24px;gap:0}
+.workout-v2 .workout-top{align-items:center;margin-bottom:12px;gap:12px}
+.workout-v2 .exit-workout{font-size:.8rem;min-width:64px;width:auto;height:44px;padding:8px;border:1px solid var(--line);border-radius:12px;background:#fff;color:var(--muted)}
+.workout-v2 .workout-top>span{font-size:.8rem;letter-spacing:.1em;font-weight:900}
+.workout-v2 .workout-top strong{font-size:1rem;text-align:right;font-variant-numeric:tabular-nums}
+.workout-v2 .workout-top small{display:block;font-size:.55rem;letter-spacing:.09em;color:var(--muted);margin-top:3px}
+.workout-v2>.progress{flex:none;height:9px}
+.workout-v2 .workout-body{padding:22px 0 18px;display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:0}
+.workout-v2 .workout-body h1{font-size:clamp(1.6rem,6vw,2.25rem);line-height:1.4;margin:8px 0;max-width:100%}
+.workout-v2 .exercise-area{font-size:.85rem;font-weight:700;color:var(--muted);margin:0}
+.exercise-visual{display:grid;place-items:center;width:min(100%,260px);height:clamp(88px,15svh,140px);margin:12px 0 4px;background:linear-gradient(140deg,#fafafa,#fff2f3);border:1px solid #f2e9eb;border-radius:26px;overflow:hidden}
+.exercise-visual img{width:100%;height:100%;object-fit:contain;min-height:0}
+.exercise-visual>div{text-align:center}
+.exercise-visual svg{display:block;height:70px;width:68px;margin:auto}
+.exercise-visual span{display:block;font-size:.6rem;color:var(--muted);font-weight:700;margin-top:3px}
+.workout-v2 .workout-amount{font-size:clamp(6rem,27vw,8.5rem);letter-spacing:-.055em;font-weight:950;line-height:1;margin:14px 0 12px;color:var(--red);font-variant-numeric:tabular-nums;width:100%}
+.workout-v2 .workout-amount small{display:block;font-size:1.1rem;letter-spacing:.04em;margin:8px 0 0;font-weight:800}
+.workout-v2 .timer-signal{font-size:clamp(1.8rem,8vw,3rem);letter-spacing:0;display:block;line-height:1.3;padding:16px 0}
+.set-display{display:flex;flex-direction:column;gap:8px;align-items:center;margin:4px 0 8px}
+.workout-v2 .set-label{margin:0;font-size:1.05rem;font-weight:900;letter-spacing:.09em;color:var(--ink)}
+.set-dots{display:flex;gap:8px;justify-content:center}
+.set-dots span{display:grid;place-items:center;width:16px;height:16px;border:2px solid #dfe1e6;border-radius:50%;font-size:9px;color:white}
+.set-dots .done{background:var(--red);border-color:var(--red)}
+.set-dots .now{border-color:var(--red);box-shadow:0 0 0 3px var(--pale)}
+.workout-v2 .set-message{font-size:.8rem;line-height:1.7;margin:8px 0 0;max-width:340px;color:var(--muted)}
+.workout-v2 .workout-actions{margin-top:auto;gap:12px}
+.workout-v2 .workout-actions .primary{min-height:66px;font-size:1.15rem;border-radius:20px}
+.workout-v2 #workout-how{min-height:44px;padding:10px;background:none;border:0;box-shadow:none;color:var(--muted);font-size:.8rem;margin:0}
+.workout-v2 .pause-workout{margin:10px auto 0;min-height:44px;font-size:.8rem;padding:8px 20px;box-shadow:none}
+.workout-v2.is-paused .workout-amount{color:#777d87}
+.workout-v2.phase-rest .workout-body,.workout-v2.phase-restclear .workout-body{background:#fff7eb;border:1px solid #f2e4cb;border-radius:28px;margin:22px 0;padding:36px 12px}
+.workout-v2 .rest-title{color:#9e752f;font-size:2.2rem!important;letter-spacing:.16em}
+.workout-v2.phase-rest .workout-amount,.workout-v2.phase-restclear .workout-amount{color:#9e752f;margin:24px 0}
+.rest-next{font-size:1rem;font-weight:800;margin:8px 0 12px;line-height:1.6}
+.workout-v2 #rest-skip{min-height:52px;background:#fff;border:1px solid #ebdfca;color:#806232}
+.workout-v2.phase-countin .exercise-visual,.workout-v2.phase-start .exercise-visual,.workout-v2.phase-setclear .exercise-visual{display:none}
+.workout-v2.phase-countin .workout-amount{font-size:clamp(8rem,38vw,11rem);margin:44px 0}
+.workout-v2 .workout-complete{position:relative;isolation:isolate;overflow:hidden;border:1px solid #ffe0e5;border-radius:28px;background:radial-gradient(ellipse at 50% 25%,#fff0d5,transparent 65%),#fff9fa;margin-top:20px;padding:30px 12px}
+.workout-v2 .workout-complete h1{font-size:clamp(2rem,8vw,2.7rem);letter-spacing:.02em;animation:workout-reveal .45s ease-out}
+.workout-v2 .workout-complete .complete-mark{margin-bottom:12px;border:2px solid #edcf8d;background:#fff3d9;color:#ae7b26;box-shadow:0 5px 0 #edd8ad}
+.workout-v2 .workout-complete .xp-reward{padding:10px 20px;background:#fff;border:1px solid #f3d7dd;border-radius:18px;font-size:1.7rem;margin-top:16px}
+@keyframes workout-reveal{from{opacity:0;transform:scale(.92)}to{opacity:1;transform:scale(1)}}
+@media(max-width:400px){.workout-v2{min-height:calc(100svh - 72px);padding-top:14px}.workout-v2 .workout-body{padding-top:16px}.workout-v2 .exercise-visual{height:94px}.workout-v2 .workout-amount{font-size:6rem}}
+@media(max-height:720px){.workout-v2 .exercise-visual{height:82px;margin-top:8px}.exercise-visual svg{height:54px}.workout-v2 .workout-body{padding:14px 0}.workout-v2 .workout-amount{margin:10px 0}.workout-v2 .workout-body h1{font-size:1.6rem}}
+@media(prefers-reduced-motion:reduce){.workout-v2 .workout-complete h1{animation:none}}
+/* 章選択と、データで定義した左右位置をつなぐ共通ルート。 */
+.chapter-tabs{display:flex;gap:10px;margin:24px 0 0;flex-wrap:wrap}
+.chapter-tab{flex:1;min-width:120px;min-height:48px;border:2px solid var(--line);border-radius:15px;background:#fff;color:var(--muted);font-size:.75rem;font-weight:850;padding:12px}
+.chapter-tab[aria-pressed="true"]{border-color:var(--red);background:var(--pale);color:var(--red-dark);box-shadow:0 3px 0 #f3c6ce}
+.chapter-clear{display:inline-block;padding:6px 10px;background:#fff2;color: white;border:1px solid #fff4;border-radius:9px;font-size:.7rem!important;font-weight:900}
+.home-v2 .stage.route-right:after{left:26%;width:40%;height:260px;border:0;border-left:7px dotted #e7c9c9;border-bottom:7px dotted #e7c9c9;border-radius:0 0 0 80px}
+.home-v2 .stage.route-left:after{left:26%;width:40%;height:260px;border:0;border-right:7px dotted #e7c9c9;border-bottom:7px dotted #e7c9c9;border-radius:0 0 80px 0}
+.home-v2 .stage.route-straight:after{left:26%;width:0;height:260px;border:0;border-left:7px dotted #e7c9c9;border-radius:0}
+.home-v2 .right.route-straight:after{left:66%}
+.home-v2 .stage:last-child:after{display:none}
+/* 背景だけ固定高にし、章の長さで装飾がキャラクター帯へ伸びないようにする。 */
+.home-v2 .map-scenery img{height:950px}
+.chapter-finish{margin:0 0 24px;padding:22px;background:var(--pale);border:1px solid #ffd4dc;border-radius:24px;width:100%}
+/* 種目間休憩：セット間RESTの表示や操作は変更しません。 */
+.workout-v2.phase-exerciseRest .workout-body{background:#fff7eb;border:1px solid #f2e4cb;border-radius:28px;margin:22px 0;padding:36px 12px}
+.workout-v2.phase-exerciseRest .workout-amount{color:#9e752f;margin:24px 0}
+.workout-v2.phase-exerciseRest .eyebrow{color:#9e752f}
+.workout-v2.phase-exerciseRest .rest-title{font-size:1.7rem!important;letter-spacing:.06em}
+.level-up{border:1px solid #e8ce94;background:radial-gradient(ellipse at top,#fff0cb,#fff9ee);box-shadow:0 5px 0 #f0dfbc,0 9px 25px #c8a04714}
+.level-up .eyebrow{color:#a17422}.level-carry{font-size:.85rem;font-weight:750;color:#846628;margin-top:10px}
+@media(prefers-reduced-motion:reduce){.level-up{animation:none}}
+.workout-v2 .exercise-rest-skip{width:100%;min-height:54px;border:2px solid #d8b879;border-radius:17px;background:#fff5de;color:#795522;font-size:1rem;font-weight:850;box-shadow:0 3px 0 #ead7b2;margin:0 0 4px}
+.workout-v2 .exercise-rest-skip:active:not(:disabled){transform:translateY(2px);box-shadow:0 1px 0 #ead7b2}
+.workout-v2 .exercise-rest-skip:disabled{opacity:.5;cursor:default}
+.journey-end{position:relative;display:flex;flex-direction:column;align-items:center;padding:30px 12px 24px;pointer-events:none}
+.journey-end:before{content:"";position:absolute;top:0;left:50%;height:25px;border-left:6px dotted #e7c9c9}
+.journey-end img{width:92px;height:auto;filter:drop-shadow(0 3px 2px #743c3620)}
+.journey-end p{margin-top:10px;font-size:.65rem;letter-spacing:.08em;font-weight:800;color:var(--muted)}
+/* 章末のボスをCHECK POINTボタンの真上に配置。タップ領域は覆いません。 */
+.home-v2 .stage.checkpoint{height:400px;min-height:400px}
+.home-v2 .checkpoint .map-enemy.boss{left:26%;right:auto;top:16px;width:126px;transform:translateX(-50%)}
+.home-v2 .checkpoint .stage-stop{top:154px}
+.home-v2 .checkpoint .stage-info{top:169px}
+.home-v2 .checkpoint .map-hero{top:320px}
+.home-v2 .stage.route-right:after,.home-v2 .stage.route-left:after,.home-v2 .stage.route-straight:after{height:var(--route-height,260px)}
+@media(max-width:350px){.home-v2 .checkpoint .map-enemy.boss{width:116px}}
+
+/* 最終章：既存マップのサイズを保ち、赤と金で最終ボスを区別。 */
+.home-v2 .final-checkpoint .map-enemy.boss::before { background: radial-gradient(ellipse, #ffd56b77, #f6534333 52%, transparent 72%); }
+.final-checkpoint .stage-node { border-color: #d5a044; box-shadow: 0 7px 0 #a8342e, 0 0 18px #e6b44935; }
+.final-boss-label { display: block; color: #ae6520; font-weight: 900; font-size: 10px; letter-spacing: .1em; }
+.quest-clear { position: relative; overflow: hidden; background: radial-gradient(circle at 50% 24%, #fff1cb, #fff 58%); border: 2px solid #e5b65b; border-radius: 28px; padding: 32px 20px; }
+.quest-clear h1 { color: var(--red); text-shadow: 0 2px 0 #f6d99b; }
+.quest-clear .eyebrow { color: #a66b12; font-size: 22px; }
+.quest-hero { width: min(240px, 75%); height: auto; margin: 12px auto; filter: drop-shadow(0 0 20px #e8b94e66); animation: quest-arrival .7s ease-out both; }
+.quest-clear .celebration i { background: #d6a239; }
+.quest-clear .celebration i:nth-child(even) { background: var(--red); }
+@keyframes quest-arrival { from { opacity: 0; transform: scale(.85); } to { opacity: 1; transform: scale(1); } }
+@media (prefers-reduced-motion: reduce) { .quest-hero { animation: none; } }
+
+.choice-note { display: block; margin-top: 5px; font-size: .78rem; font-weight: 400; color: var(--muted); }
+#jump-toggle { min-width: 64px; min-height: 44px; border: 2px solid var(--line); border-radius: 12px; font-weight: 800; background: #fff; color: var(--muted); }
+#jump-toggle[aria-checked="true"] { color: var(--red); border-color: var(--red); background: var(--pale); }
+#jump-toggle:disabled { opacity: .5; }
+
+/* CHECK POINTの初回クリア演出。通常DAYの画面・タイマーには影響しません。 */
+.visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+.boss-defeat { position: relative; isolation: isolate; overflow: hidden; min-height: 70svh; border-radius: 28px; padding: 40px 18px; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 18px; text-align: center; background: radial-gradient(circle, #fff0e2, #fff 72%); margin: 28px 0; }
+.boss-defeat h1 { color: var(--red); font-size: clamp(1.5rem, 7vw, 2.4rem); animation: clear-title .4s ease-out both; }
+.defeat-boss { width: min(320px, 100%); height: auto; animation: boss-fall 2.4s ease-in forwards; }
+.boss-name { font-weight: 800; }
+.defeat-flash { position: absolute; inset: 0; z-index: 2; pointer-events: none; background: #ffdbd8; opacity: 0; animation: boss-flash 2.4s linear both; }
+.final-defeat { color: #fff; background: radial-gradient(circle at 50% 35%, #633342, #26212b 75%); }
+.final-defeat .eyebrow { color: #f3d194; }
+.final-defeat .defeat-boss { width: min(380px, 100%); animation: final-boss-fall 3.2s ease-in forwards; filter: drop-shadow(0 0 24px #ed3c4a66); }
+.final-defeat .defeat-flash { animation: final-boss-flash 3.2s linear both; }
+.final-defeat .boss-name { animation: ending-fade-away 3.2s linear forwards; }
+.final-quest-caption { font-size: .85rem; letter-spacing: .12em; color: #f3d194; animation: clear-title .5s ease-out both; }
+.first-chapter-clear { position: relative; overflow: hidden; border-radius: 24px; background: radial-gradient(circle at 50% 12%, #fff8e7, #fff 50%); }
+.first-chapter-clear h1 { animation: clear-title .55s ease-out both; }
+.unlock-item { display: flex; flex-direction: column; gap: 3px; }
+.unlock-item small { color: #ac731f; font-weight: 900; letter-spacing: .12em; }
+.first-chapter-clear .unlock-item { animation: unlock-reveal .4s ease-out both; animation-delay: var(--unlock-delay); }
+.chapter-final-message { margin: 26px 0; line-height: 1.9; font-weight: 750; }
+.clear-revisit .celebration { display: none; }
+.clear-revisit .quest-hero { animation: none; }
+.full-ending { animation: ending-dawn 1s ease-out both; box-shadow: 0 0 36px #e6ba4630; }
+.full-ending .ending-title { font-size: clamp(1.65rem, 7vw, 2.8rem); animation: clear-title .7s ease-out both; }
+.full-ending .ending-name { animation: unlock-reveal .6s .65s ease-out both; }
+.full-ending .ending-message { animation: unlock-reveal .7s 1.1s ease-out both; }
+.full-ending .ending-records { animation: unlock-reveal .7s 1.8s ease-out both; }
+.full-ending .quest-hero { animation: quest-arrival .8s ease-out both, ending-hero-float 3s .8s ease-in-out 3; }
+.ending-message { line-height: 1.9; margin-bottom: 24px; }
+.ending-message h2 { color: #a66b12; font-size: 1.2rem; }
+.ending-records { width: 100%; min-width: 0; margin-top: 30px; }
+.journey-timeline { list-style: none; text-align: left; padding: 0 0 0 20px; margin: 26px 8px 38px; border-left: 3px solid #ecd29c; }
+.journey-timeline li { position: relative; display: flex; flex-direction: column; gap: 6px; padding: 0 0 26px 8px; overflow-wrap: anywhere; }
+.journey-timeline li::before { content: ''; position: absolute; left: -27px; top: 4px; width: 11px; height: 11px; border-radius: 50%; background: var(--red); box-shadow: 0 0 0 4px #fff2d7; }
+.journey-timeline li:last-child { padding-bottom: 0; color: #9c6715; }
+.journey-timeline span { font-size: .87rem; color: var(--muted); }
+.ending-records .primary { margin-top: 28px; }
+.full-ending .celebration i { top: 20px; width: 8px; height: 14px; animation: ending-confetti 2.2s ease-out both; }
+@keyframes boss-fall { 0%,15% { transform: translateX(0); } 22%,34% { transform: translateX(-7px); } 28%,40% { transform: translateX(7px); } 48% { transform: scale(1); opacity: 1; } 75% { transform: translateY(-18px) scale(.8) rotate(-6deg); opacity: .6; } 100% { transform: translateY(-30px) scale(.4); opacity: 0; } }
+@keyframes boss-flash { 0%,42%,58%,100% { opacity: 0; } 48% { opacity: .35; } }
+@keyframes final-boss-fall { 0%,10% { transform: translateX(0); opacity: 1; } 16%,28%,40% { transform: translateX(-10px) rotate(-2deg); } 22%,34%,46% { transform: translateX(10px) rotate(2deg); } 55% { transform: scale(1); opacity: 1; } 80% { transform: scale(.6) translateY(-24px); opacity: .5; } 100% { transform: scale(.15) translateY(-40px); opacity: 0; } }
+@keyframes final-boss-flash { 0%,40%,54%,65%,82%,100% { opacity: 0; } 47% { background: #e43645; opacity: .35; } 73% { background: #fff; opacity: .4; } }
+@keyframes ending-fade-away { 0%,70% { opacity: 1; } 100% { opacity: 0; } }
+@keyframes clear-title { from { opacity: 0; transform: scale(.9); } to { opacity: 1; transform: scale(1); } }
+@keyframes unlock-reveal { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes ending-dawn { from { background-color: #f0dfc4; } to { background-color: #fff; } }
+@keyframes ending-hero-float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+@keyframes ending-confetti { from { transform: translateY(-25px) rotate(0); opacity: 0; } 15% { opacity: 1; } to { transform: translateY(430px) rotate(220deg); opacity: 0; } }
+@media (prefers-reduced-motion: reduce) {
+  .boss-defeat *, .first-chapter-clear *, .full-ending * { animation: none !important; }
+  .defeat-flash, .full-ending .celebration { display: none; }
+}
+
+/* DEV ONLY：DEV_MODE=falseではHTML自体を生成しません。 */
+.dev-clear-button { display: block; margin: 28px auto 16px; padding: 8px 12px; min-height: 36px; max-width: 100%; border: 1px dashed #9a9da4; border-radius: 8px; background: #f5f5f6; color: #6a6d75; font-size: .72rem; font-weight: 500; box-shadow: none; }
+.dev-clear-button:active { background: #e8e9ec; }
+
+/* エンディングの締め：続編への道しるべ。 */
+.sequel-preview { position: relative; overflow: hidden; margin-top: 34px; padding: 28px 14px 30px; border: 1px solid #edd39e; border-radius: 22px; background: linear-gradient(145deg, #fffaf0, #fff 55%, #fff1f2); }
+.sequel-path { display: block; margin-bottom: 12px; color: #b68127; font-size: 26px; }
+.sequel-preview h2 { margin: 0; font-size: clamp(1.15rem, 5.5vw, 1.75rem); line-height: 1.5; letter-spacing: .03em; color: var(--red-dark); overflow-wrap: anywhere; }
+.sequel-coming { margin-top: 12px; color: #9c6819; font-size: 1rem; font-weight: 800; }
+.sequel-description { margin-top: 18px; color: var(--muted); font-size: .85rem; line-height: 1.95; }
+.full-ending .sequel-preview { animation: sequel-glow 1.6s 2.2s ease-out both; }
+@keyframes sequel-glow { from { opacity: 0; box-shadow: 0 0 0 #e6b54a00; } to { opacity: 1; box-shadow: 0 0 20px #e6b54a18; } }
+@media (prefers-reduced-motion: reduce) { .full-ending .sequel-preview { animation: none; } }
+
+/* 短い手順を1行ずつ表示し、注意をPOINTと区別します。 */
+#exercise-how { white-space: pre-line; }
+.caution-box { margin: 16px 0 24px; padding: 14px 16px; border: 1px solid #eadbb8; border-radius: 14px; background: #fffaf0; }
+.caution-box h3 { margin-top: 0; color: #805b24; }
+
+/* 単独画像は縦横比を維持し、全体を表示します。 */
+.exercise-single-image { width: 100%; margin: 18px 0; border-radius: 16px; background: #fff8ef; }
+.exercise-single-image img { display: block; width: 100%; max-width: 100%; height: auto; border-radius: 16px; }
+.menu-dialog { width: min(560px, calc(100vw - 24px)); max-width: calc(100vw - 24px); max-height: calc(100svh - 32px); padding: 24px; }
+.menu-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 20px; }
+.menu-heading h2 { margin: 8px 0 0; font-size: 1.35rem; overflow-wrap: anywhere; }
+.menu-close { flex-shrink: 0; width: 44px; height: 44px; border: 1px solid var(--line); border-radius: 14px; background: #fff; color: var(--ink); font-size: 1.6rem; }
+.menu-cards { display: grid; gap: 14px; margin: 12px 0 24px; }
+.menu-card { display: flex; align-items: center; gap: 12px; width: 100%; min-height: 86px; padding: 16px 12px; border: 2px solid var(--line); border-radius: 18px; background: #fff; text-align: left; color: var(--ink); box-shadow: 0 4px 0 #e8e9ec; }
+.menu-card > span:nth-child(2) { flex: 1; min-width: 0; }
+.menu-card strong { display: block; font-size: 1rem; }
+.menu-card small { display: block; margin-top: 7px; font-size: .74rem; color: var(--muted); }
+.menu-card-number { color: var(--red); font-weight: 900; font-size: .85rem; }
+.menu-card:active, .library-card:active { transform: translateY(2px); box-shadow: 0 2px 0 #e8e9ec; }
+.menu-back { border: 0; color: var(--red-dark); background: var(--pale); border-radius: 12px; padding: 12px; min-height: 44px; margin-bottom: 18px; font-weight: 700; }
+.menu-intro { font-size: .85rem; line-height: 1.8; color: var(--muted); margin-bottom: 20px; }
+.library-category { margin-bottom: 26px; }
+.library-category h3 { border-left: 4px solid var(--red); padding-left: 10px; }
+.library-list { display: grid; gap: 12px; }
+.library-card { display: flex; flex-direction: column; gap: 7px; width: 100%; text-align: left; padding: 16px; border: 2px solid var(--line); border-radius: 16px; background: #fff; color: var(--ink); box-shadow: 0 3px 0 #e8e9ec; }
+.library-card strong { font-size: 1rem; }
+.library-card span, .library-card small { font-size: .8rem; color: var(--muted); }
+.library-description p, .about-quest p { line-height: 1.9; font-size: .95rem; }
+.exercise-how-text { white-space: pre-line; }
+.guide-steps { list-style: none; padding: 0; counter-reset: guide; display: grid; gap: 14px; }
+.guide-steps li { counter-increment: guide; padding: 16px; border: 1px solid var(--line); border-radius: 16px; background: #fff; }
+.guide-steps li::before { content: counter(guide, decimal-leading-zero); display: block; font-weight: 900; color: var(--red); margin-bottom: 8px; }
+.guide-steps p { margin-top: 8px; line-height: 1.8; font-size: .85rem; color: var(--muted); }
+#menu-map { margin-top: 24px; }
+@media (max-width: 350px) { .menu-dialog { padding: 18px; } .menu-card { gap: 9px; } }
+/* アカウント画面：ゲームの画面・ボタンを変えず、認証UIだけに適用。 */
+.auth-menu-entry { width: 100%; margin-top: 12px; }
+.auth-dialog { width: min(440px, calc(100% - 32px)); }
+.auth-dialog h2 { margin-bottom: 12px; }
+.auth-note { color: #666; font-size: .85rem; line-height: 1.7; }
+.auth-dialog form { margin: 24px 0 12px; }
+.auth-dialog label { display: block; font-weight: 700; margin: 16px 0 8px; }
+.auth-dialog input { width: 100%; box-sizing: border-box; border: 2px solid #e5e5e5; border-radius: 14px; padding: 15px; font: inherit; font-size: 16px; background: white; color: #292929; }
+.auth-dialog input:focus { outline: 3px solid #fbd4d8; border-color: #e43645; }
+.auth-dialog .primary, .auth-dialog .secondary { width: 100%; margin-top: 12px; }
+.auth-switch { display: block; width: 100%; min-height: 48px; margin-top: 14px; padding: 10px; border: 0; border-radius: 12px; background: #fff2f3; color: #b92030; font: inherit; font-size: .88rem; font-weight: 700; cursor: pointer; }
+.auth-dialog button:disabled { opacity: .55; cursor: wait; }
+.auth-message { min-height: 24px; font-size: .9rem; line-height: 1.7; color: #394941; white-space: pre-line; }
+.auth-message.auth-error { color: #b92030; }
+#auth-email { display: block; overflow-wrap: anywhere; margin-bottom: 20px; }
+.auth-dialog [hidden] { display: none !important; }
+.cloud-panel { margin-top: 24px; padding-top: 20px; border-top: 2px solid #f0e5e6; }
+.cloud-status { font-weight: 800; margin: 12px 0; color: #785e37; }
+.cloud-status.synced { color: #28714a; }
+.cloud-status.attention, .cloud-status.invalid { color: #bb2838; }
+.cloud-save-card { padding: 14px; margin: 12px 0; border: 1px solid #efd9dc; border-radius: 16px; background: #fff8f8; }
+.cloud-save-card h4 { margin: 0 0 8px; }
+.cloud-save-card p { white-space: pre-line; line-height: 1.8; font-size: .85rem; margin: 0; }
+/* ボス戦も共通トレーニング画面を使用。HPは進捗の演出だけです。 */
+.battle-boss { width: min(240px, 90%); height: 150px; object-fit: contain; margin: 14px auto; }
+.boss-intro > p { margin: 16px 0; line-height: 1.8; }
+.battle-menu { text-align: left; display: grid; gap: 12px; margin: 24px 0; }
+.battle-menu > div { padding: 16px; border: 1px solid #ead9b8; border-radius: 18px; background: #fffaf1; }
+.battle-menu span:not(.focus-badge) { display: block; margin-top: 8px; color: var(--muted); font-size: .85rem; }
+.battle-records { margin: 20px 0; text-align: left; line-height: 1.9; }
+.battle-records summary { cursor: pointer; font-weight: 700; }
+.battle-banner { display: flex; gap: 12px; align-items: center; padding: 10px 12px; margin-top: 16px; border: 1px solid #ead9b8; background: #fffaf1; border-radius: 18px; }
+.battle-banner img { width: 72px; height: 58px; object-fit: contain; }
+.battle-banner > div { flex: 1; min-width: 0; }
+.battle-banner strong, .battle-banner span { display: block; font-size: .8rem; line-height: 1.6; overflow-wrap: anywhere; }
+.boss-hp { height: 8px; margin-top: 6px; background: #e8dfce; border-radius: 10px; overflow: hidden; }
+.boss-hp i { display: block; height: 100%; background: linear-gradient(90deg, var(--red), #c99737); transition: width .3s; }
+@media (prefers-reduced-motion: reduce) { .boss-hp i { transition: none; } }

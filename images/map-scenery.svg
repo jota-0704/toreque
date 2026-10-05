@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="950" viewBox="0 0 400 950" preserveAspectRatio="none">
+  <!-- 淡いゲーム風の背景。キャラクターとステージは別に配置します。 -->
+  <defs>
+    <g id="cloud" fill="#ebedf1" stroke="#dce1e7" stroke-width="1.5">
+      <path d="M3 24C-2 18 2 11 10 11C10 0 28-3 33 9C43 5 52 12 50 20C58 23 54 30 47 30H12C6 30 3 28 3 24Z"/>
+    </g>
+    <g id="tree">
+      <ellipse cx="23" cy="66" rx="24" ry="4" fill="#e7e8de"/>
+      <path d="M20 37H28L30 65H18Z" fill="#cfbca7"/>
+      <path d="M24 49L14 39M25 44L35 34" fill="none" stroke="#bfa98e" stroke-width="3"/>
+      <path d="M23 2C14 2 10 9 10 15C0 17-2 28 5 34C2 44 16 49 24 44C35 50 48 42 43 32C52 22 42 12 34 13C35 6 30 2 23 2Z" fill="#dfe8d6" stroke="#cbd9bf" stroke-width="1.5"/>
+      <path d="M7 33C13 38 18 38 23 35C30 39 36 38 42 33" fill="none" stroke="#cbd9bf" stroke-width="3" stroke-linecap="round"/>
+    </g>
+    <g id="grass">
+      <ellipse cx="20" cy="27" rx="22" ry="3" fill="#e6e9df"/>
+      <path d="M18 27C10 21 4 11 3 7C12 9 17 16 20 22C16 10 19 2 22 0C26 10 25 18 23 24C28 13 35 10 40 11C37 20 31 25 25 27Z" fill="#d4dfc7"/>
+    </g>
+    <g id="rock">
+      <ellipse cx="26" cy="36" rx="29" ry="4" fill="#e7e3df"/>
+      <path d="M0 29L9 10L28 1L43 9L53 30L42 36H13Z" fill="#ded9d2" stroke="#cec8c0" stroke-width="1.5" stroke-linejoin="round"/>
+      <path d="M9 10L28 1L33 20L13 27Z" fill="#eeeae5"/>
+      <path d="M33 20L43 9L53 30L42 36H24Z" fill="#cfc9c1"/>
+    </g>
+    <g id="dumbbell" stroke="#c5bac1" stroke-width="1.5">
+      <rect x="14" y="13" width="38" height="7" rx="2" fill="#e6dce1"/>
+      <rect x="5" y="5" width="12" height="23" rx="3" fill="#d9cbd2"/>
+      <rect x="0" y="9" width="6" height="15" rx="2" fill="#e6dce1"/>
+      <rect x="49" y="5" width="12" height="23" rx="3" fill="#d9cbd2"/>
+      <rect x="60" y="9" width="6" height="15" rx="2" fill="#e6dce1"/>
+      <path d="M9 8V24M53 8V24" stroke="#eee7eb" stroke-width="2"/>
+    </g>
+    <g id="plate">
+      <circle cx="21" cy="21" r="20" fill="#e7d8d4" stroke="#d4c0b9" stroke-width="2"/>
+      <circle cx="21" cy="21" r="14" fill="none" stroke="#d4c0b9" stroke-width="2"/>
+      <circle cx="21" cy="21" r="5" fill="#fffaf8" stroke="#d4c0b9" stroke-width="2"/>
+      <path d="M9 12L12 9M30 9L33 12M9 30L12 33M30 33L33 30" stroke="#f5eae6" stroke-width="3" stroke-linecap="round"/>
+    </g>
+  </defs>
+  <g opacity=".78">
+    <use href="#cloud" x="325" y="14"/>
+    <!-- 丸い尾根と地面の線で丘のシルエットを示します。 -->
+    <path d="M-12 38Q19 8 51 31Q68 16 100 38Z" fill="#eef0e5"/>
+    <path d="M-10 38H100" stroke="#dfe4d4" stroke-width="2"/>
+    <use href="#tree" transform="translate(15 2) scale(.5)"/>
+    <use href="#grass" transform="translate(70 12) scale(.6)"/>
+    <use href="#dumbbell" transform="translate(312 266) rotate(-12 33 16)"/>
+    <use href="#rock" x="18" y="522"/>
+    <use href="#grass" x="335" y="525"/>
+    <use href="#cloud" x="17" y="790"/>
+    <use href="#plate" x="341" y="782"/>
+    <path d="M288 303Q315 275 340 294Q372 268 412 303Z" fill="#eef0e5"/>
+    <path d="M288 303H410" stroke="#dfe4d4" stroke-width="2"/>
+    <use href="#tree" transform="translate(20 262) scale(.5)"/>
+    <use href="#grass" transform="translate(125 530) scale(.7)"/>
+    <use href="#dumbbell" transform="translate(150 784) rotate(13 33 16)"/>
+    <!-- 最下部の小岩は、勇者や進行表示との余白を確保できないため非表示。 -->
+    <use href="#rock" transform="translate(26 912) scale(.7)" display="none"/>
+  </g>
+</svg>
