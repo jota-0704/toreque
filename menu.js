@@ -28,7 +28,9 @@ const TorequeMenu = (() => {
       content.innerHTML = back + '<ol class="guide-steps">' + steps.map(([heading, text]) => '<li><strong>' + heading + '</strong><p>' + text + '</p></li>').join('') + '</ol>';
     } else if (name === 'records') {
       title.textContent = '冒険の記録';
-      content.innerHTML = back + '<p class="menu-intro">あなたが積み重ねた冒険の記録。</p>' + adventureRecordsHtml(TorequeProgress.adventureSummary());
+      content.innerHTML = window.TorequeOfficial?.managed() && !window.TorequeOfficial.ready() ?
+        back + '<p class="menu-intro">正式な記録を確認できません。MENUのアカウントから「正式な記録を再確認」を押してください。</p>' :
+        back + '<p class="menu-intro">あなたが積み重ねた冒険の記録。</p>' + adventureRecordsHtml(TorequeProgress.adventureSummary());
     } else if (name === 'settings') {
       title.textContent = '設定';
       content.innerHTML = back + '<p class="menu-intro">保存済みのサウンド・ジャンプ設定を変更できます。</p><button class="primary" id="menu-settings-open">設定を開く</button>';

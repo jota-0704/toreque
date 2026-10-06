@@ -31,7 +31,9 @@ const TorequeProgress = (() => {
       [id, record && typeof record === 'object' ? { ...record, clearCount: clearCountFor(record) } : record]));
     const unlockedStages = TorequeStages.unlocked(history);
     const unlockedExercises = TorequeTraining.catalog.filter(e => e.requiredCheckpoint && history[e.requiredCheckpoint]?.completed).map(e => e.id);
-    const pending = old.pending ? resultWithLevels(old.pending) : null;
+    const pendingRun = old.pending && history[old.pending.day]?.runs?.find(run => run.id === old.pending.runId);
+    // 古い匿名セーブに評価済みrunとpendingが同居していても、未評価画面へ復元しない。
+    const pending = old.pending && !RATINGS.includes(pendingRun?.rating) ? resultWithLevels(old.pending) : null;
     if (pending?.firstClear) pending.unlockedStage = TorequeStages.next(pending.day)?.id || null;
     return { ...old, xp, ...levelState(xp), levelSystem: 2, history,
       streak: Number.isInteger(old.streak) && old.streak >= 0 ? old.streak : 0,
@@ -39,19 +41,24 @@ const TorequeProgress = (() => {
       unlockedStages, unlockedDays: unlockedStages.filter(id => typeof id === 'number'), unlockedExercises, pending };
   }
   function read() {
+    if (window.TorequeOfficial?.managed() || window.TorequeAuth?.getState().userId || window.TorequeAuth?.getState().initializing)
+      return window.TorequeOfficial?.read() || { xp: 0, level: 1, levelXp: 0, requiredXp: 500, streak: 0, history: {}, unlockedStages: [], unlockedDays: [], unlockedExercises: [], pending: null };
     const saved = TorequeStorage.read() || {};
     const progress = normalize(saved);
     // 旧データのクリア履歴から新しい解放項目を補い、XPはそのまま維持します。
-    if (saved.completed && (saved.progress?.levelSystem !== 2 || saved.progress?.level !== progress.level || saved.progress?.levelXp !== progress.levelXp || saved.progress?.requiredXp !== progress.requiredXp ||
+    if (saved.completed && (saved.progress?.pending && !progress.pending || saved.progress?.levelSystem !== 2 || saved.progress?.level !== progress.level || saved.progress?.levelXp !== progress.levelXp || saved.progress?.requiredXp !== progress.requiredXp ||
         JSON.stringify(saved.progress?.unlockedStages) !== JSON.stringify(progress.unlockedStages) || JSON.stringify(saved.progress?.unlockedExercises) !== JSON.stringify(progress.unlockedExercises) ||
         Object.entries(progress.history).some(([id, record]) => record?.clearCount !== saved.progress?.history?.[id]?.clearCount))) TorequeStorage.save({ ...saved, progress });
     return progress;
   }
   function displayedStreak(date = new Date()) {
     const progress = read();
+    if (window.TorequeOfficial?.managed()) return progress.streak;
     return [localDate(date), previousDate(date)].includes(progress.lastTrainingDate) ? progress.streak : 0;
   }
   function complete(day, runId, date = new Date(), stats = null) {
+    if (window.TorequeOfficial?.managed()) return window.TorequeOfficial.complete(runId);
+    if (window.TorequeAuth?.getState().userId || window.TorequeAuth?.getState().initializing) throw new Error('正式記録を確認してください。');
     const saved = TorequeStorage.read() || {};
     const progress = normalize(saved);
     const previous = progress.history[day] || { runs: [] };
@@ -88,6 +95,8 @@ const TorequeProgress = (() => {
   }
   function rate(day, runId, rating) {
     if (!RATINGS.includes(rating)) return false;
+    if (window.TorequeOfficial?.managed()) return window.TorequeOfficial.rate(runId, rating);
+    if (window.TorequeAuth?.getState().userId || window.TorequeAuth?.getState().initializing) return false;
     const saved = TorequeStorage.read() || {};
     const progress = normalize(saved);
     const record = progress.history[day];
@@ -105,6 +114,7 @@ const TorequeProgress = (() => {
     return true;
   }
   function completeCheckpoint(id, date = new Date()) {
+    if (window.TorequeOfficial?.managed() || window.TorequeAuth?.getState().userId) return null;
     const progress = read();
     const stage = TorequeStages.get(id);
     if (stage?.type !== 'checkpoint' || !progress.unlockedStages.includes(id) || progress.pending) return null;
@@ -116,7 +126,8 @@ const TorequeProgress = (() => {
   function chapterSummary(id) {
     const stage = TorequeStages.get(id);
     const progress = read();
-    const saved = TorequeStorage.read() || {};
+    const local = TorequeStorage.read() || {};
+    const saved = window.TorequeOfficial?.managed() ? window.TorequeOfficial.setup(local) : local;
     const days = stage.reviewDays || (stage.final ? TorequeStages.all : TorequeStages.inChapter(stage.chapter)).filter(item => item.type === 'workout').map(item => item.id);
     let sets = 0, exercises = 0, missingRecords = 0;
     const reviews = days.map(day => {
@@ -138,6 +149,10 @@ const TorequeProgress = (() => {
       for (const run of progress.history[item.id]?.runs || []) {
         if (Number.isInteger(run.stats?.sets) && Number.isInteger(run.stats?.exercises)) {
           sets += run.stats.sets; exercises += run.stats.exercises;
+        } else if (window.TorequeOfficial?.managed()) {
+          const menu = saved.bossMenus?.[item.id]?.menu;
+          if (menu?.length) { sets += menu.reduce((sum, e) => sum + e.sets, 0); exercises += menu.length; }
+          else missingRecords++;
         }
       }
     });
@@ -156,7 +171,8 @@ const TorequeProgress = (() => {
       return total + (recordedRewards.length ? recordedRewards.reduce((sum, run) => sum + run.result.reward, 0) : record.rewardClaimed ? item.reward : 0);
     }, 0);
     return { chapterXp, xp: progress.xp, level: progress.level, streak: displayedStreak(),
-      unlockedExerciseCount: progress.unlockedExercises.length, completedDays: reviews.filter(review => review.completed).length, sets, exercises, missingRecords, reviews, message };
+      unlockedExerciseCount: progress.unlockedExercises.length, completedDays: reviews.filter(review => review.completed).length, sets, exercises, missingRecords, reviews, message,
+      referenceStats: !!window.TorequeOfficial?.managed() };
   }
   // FINAL CLEARとMENUの冒険記録はこの集計を共通利用します。
   function adventureSummary() {
@@ -165,6 +181,7 @@ const TorequeProgress = (() => {
     const history = read().history;
     const workouts = TorequeStages.all.reduce((sum, stage) => {
       const record = history[stage.id];
+      if (window.TorequeOfficial?.managed()) return sum + (record?.clearCount || 0);
       if (stage.type === 'checkpoint') return sum + (record?.runs || []).filter(run => run.stats?.exerciseIds?.length).length;
       return sum + (Array.isArray(record?.runs) && record.runs.length ? record.runs.length : record?.completed ? 1 : 0);
     }, 0);

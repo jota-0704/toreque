@@ -15,7 +15,13 @@
     if (value && typeof value === 'object') return Object.fromEntries(Object.keys(value).sort().map(key => [key, sort(value[key])]));
     return value;
   }
-  const envelope = save => ({ schemaVersion: 1, save: copy(save) });
+  // 設定用クラウドセーブ。旧成果は端末に残しても正式成果として同期しません。
+  function preferences(save) {
+    const value = copy(save);
+    if (value && window.TorequeOfficial?.managed()) delete value.progress;
+    return value;
+  }
+  const envelope = save => ({ schemaVersion: 1, save: preferences(save) });
   const fingerprint = save => canonical(envelope(save));
   const metaKey = id => `toreque.v1.setup.user.${id}.sync`;
   let owner = null, desired = null, epoch = 0, controller = null, timer = null;
@@ -36,7 +42,9 @@
     return error;
   }
   const unsafe = () => TorequeWorkout.isActive() || clearEffectActive;
-  const alive = ctx => ctx.epoch === epoch && ctx.id === owner && ctx.id === desired &&
+  const blocked = () => !!TorequeStorage.deletionState?.(owner);
+  function pauseDeletion() { window.TorequeOfficial?.pauseDeletion(); epoch++; controller?.abort(); clearTimeout(timer); timer = null; show('deferred', 'アカウント削除を確認中です。同期を停止しています。'); }
+  const alive = ctx => !blocked() && ctx.epoch === epoch && ctx.id === owner && ctx.id === desired &&
     ctx.id === window.TorequeAuth.getState().userId;
   function show(status, message, choice = null, busy = false) {
     state = { status, message, choice, busy };
@@ -212,10 +220,11 @@
   }
   function schedule() {
     clearTimeout(timer);
-    if (!owner || owner !== desired || ['attention', 'invalid', 'deferred'].includes(state.status)) return;
+    if (blocked() || !owner || owner !== desired || ['attention', 'invalid', 'deferred'].includes(state.status)) return;
     timer = setTimeout(() => { timer = null; sync(); }, 350);
   }
   function sync() {
+    if (blocked()) { pauseDeletion(); return Promise.resolve(); }
     if (desired !== owner) { activate(); return queue; }
     return enqueue(inspect);
   }
@@ -259,7 +268,8 @@
     if (owner) show('syncing', 'クラウドを確認中…', null, true);
     else show('guest', '未ログイン用の冒険に戻りました。');
     refreshGame();
-    if (owner) enqueue(inspect);
+    if (owner && blocked()) pauseDeletion();
+    else if (owner) enqueue(inspect);
   }
   function changeUser(auth) {
     const id = auth.userId || null;
@@ -299,7 +309,7 @@
     } catch (error) { return { ok: false, message: errorText(error.message) }; }
   }
   TorequeStorage.subscribe(event => {
-    if (!event.userId || event.userId !== owner) return;
+    if (blocked() || !event.userId || event.userId !== owner) return;
     meta.dirty = true;
     if (event.type === 'reset') {
       epoch++; controller?.abort(); clearTimeout(timer); timer = null;
@@ -312,6 +322,11 @@
   });
   // 同一アカウントの別タブの変更も、古いデータで自動上書きしません。
   window.addEventListener('storage', event => {
+    if (owner && event.key === `toreque.account-delete.${owner}`) {
+      pauseDeletion();
+      if (!blocked()) sync();
+      return;
+    }
     if (owner && (event.key === TorequeStorage.getKey() || event.key === metaKey(owner))) {
       epoch++; controller?.abort(); clearTimeout(timer);
       try { meta = JSON.parse(localStorage.getItem(metaKey(owner))) || {}; } catch { meta = {}; }
@@ -321,7 +336,7 @@
   window.addEventListener('offline', () => { controller?.abort(); if (owner) show('offline', 'オフラインです。端末のデータを保持しています。'); });
   window.addEventListener('online', () => { if (owner && owner === desired) sync(); });
   window.TorequeCloud = Object.freeze({
-    sync, choose, decline, onScreenChange, validSave, checkAccess,
+    pauseDeletion, sync, choose, decline, onScreenChange, validSave, checkAccess,
     getLastError: () => copy(lastError),
     subscribe(fn) { listeners.add(fn); return () => listeners.delete(fn); },
     getState() {

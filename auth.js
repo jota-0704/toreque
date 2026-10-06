@@ -8,9 +8,15 @@
   document.body.appendChild(dialog);
   const el = id => dialog.querySelector('#' + id);
   el('auth-account').innerHTML += '<section class="cloud-panel" id="cloud-panel" hidden><h3>クラウド保存</h3><p id="cloud-status" role="status" aria-live="polite"></p><p id="cloud-message" class="auth-note"></p><div id="cloud-comparison" hidden><section class="cloud-save-card"><h4 id="cloud-local-title">この端末のデータ</h4><p id="cloud-local-summary"></p></section><section class="cloud-save-card" id="cloud-remote-card"><h4>クラウドのデータ</h4><p id="cloud-remote-summary"></p></section></div><button class="primary" id="cloud-use-local" hidden>この端末のデータを使用</button><button class="secondary" id="cloud-use-remote" hidden>クラウドのデータを使用</button><button class="secondary" id="cloud-decline" hidden>引き継がず新しい冒険を始める</button><button class="secondary" id="cloud-sync">今すぐ同期</button></section>';
+  el('auth-account').innerHTML += '<button class="secondary account-delete-button" id="account-delete-open">アカウントを削除</button>';
   dialog.innerHTML += '<p id="auth-game-note" class="auth-note"></p>';
+  el('auth-account').innerHTML += '<button class="secondary" id="auth-official-refresh" hidden>正式な記録を再確認</button>';
   const authListeners = new Set();
-  const gameBusy = () => TorequeWorkout.isActive?.() || (typeof clearEffectActive !== 'undefined' && clearEffectActive);
+  const gameBusy = () => {
+    // HOMEを経由しない認証表示でも、確認済み終了sessionだけ整理する。renderの再帰通知は不要。
+    TorequeWorkout.releaseFinished?.(false);
+    return TorequeWorkout.isActive?.() || (typeof clearEffectActive !== 'undefined' && clearEffectActive);
+  };
   let user = null, available = false, initializing = true, busy = false, mode = 'login';
   let message = '', isError = false, releasePause = null, revision = 0;
   function notifyAuth() {
@@ -20,6 +26,7 @@
   function getState() { return { loggedIn: !!user, userId: user?.id || null, email: user?.email || null, available, initializing }; }
   function summary(save) {
     if (!save) return '冒険データなし';
+    if (window.TorequeOfficial?.managed()) return '初回質問・ユーザー設定・メニュー設定\nXP・クリア・評価などの正式成果は、この選択で移行／上書きされません。';
     const xp = Number.isFinite(save.progress?.xp) ? Math.max(0, Math.min(1000000000, save.progress.xp)) : 0;
     const history = save.progress?.history || {};
     const days = Object.entries(history).filter(([id, value]) => /^\d+$/.test(id) && value?.completed).length;
@@ -90,6 +97,13 @@
     el('auth-message').textContent = initializing ? 'ログイン状態を確認中…' : message;
     el('auth-message').classList.toggle('auth-error', isError);
     renderCloud();
+    if (user && window.TorequeOfficial) {
+      const official = window.TorequeOfficial.getState();
+      el('auth-game-note').textContent += (gameBusy() ? '\n' : '') + (official.ready ? '正式な成果：サーバー記録を使用しています。' : '正式な成果：' + (official.message || '記録を確認中…'));
+    }
+    el('auth-official-refresh').hidden = !user || !window.TorequeOfficial;
+    el('auth-official-refresh').disabled = gameBusy() || busy || !!window.TorequeAccountDelete?.isBusy();
+    el('account-delete-open').disabled = busy || !available || gameBusy() || !!window.TorequeAccountDelete?.isBusy();
   }
   function tell(text, error = false) { message = text; isError = error; render(); }
   function open() {
@@ -131,7 +145,7 @@
     finally { busy = false; render(); }
   };
   el('auth-logout').onclick = async () => {
-    if (busy || !available || gameBusy()) return;
+    if (busy || !available || gameBusy() || window.TorequeAccountDelete?.isBusy()) return;
     busy = true; tell('');
     try {
       const { error } = await TorequeSupabase.client.auth.signOut({ scope: 'local' });
@@ -160,7 +174,15 @@
     } catch (_) { message = errorText(null); isError = true; }
     finally { initializing = false; notifyAuth(); render(); }
   })();
+  el('account-delete-open').onclick = () => window.TorequeAccountDelete?.open();
   el('cloud-sync').onclick = () => window.TorequeCloud?.sync();
+  el('auth-official-refresh').onclick = async () => {
+    if (gameBusy() || window.TorequeAccountDelete?.isBusy()) return;
+    busy = true; render();
+    try { await window.TorequeOfficial.refresh(); }
+    catch { /* 正式記録の状態欄で通信失敗を表示します。 */ }
+    finally { busy = false; render(); }
+  };
   el('cloud-use-local').onclick = () => window.TorequeCloud?.choose('local');
   el('cloud-use-remote').onclick = () => window.TorequeCloud?.choose('cloud');
   el('cloud-decline').onclick = () => window.TorequeCloud?.decline();

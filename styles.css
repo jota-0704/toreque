@@ -453,3 +453,9 @@
 .boss-hp { height: 8px; margin-top: 6px; background: #e8dfce; border-radius: 10px; overflow: hidden; }
 .boss-hp i { display: block; height: 100%; background: linear-gradient(90deg, var(--red), #c99737); transition: width .3s; }
 @media (prefers-reduced-motion: reduce) { .boss-hp i { transition: none; } }
+
+/* アカウント削除確認 */
+.account-delete-button { color: #b52435; margin-top: 24px; }
+.account-delete-dialog label { display: block; margin: 16px 0; }
+.account-delete-dialog input[type="password"] { width: 100%; padding: 14px; border: 2px solid #ddd; border-radius: 12px; box-sizing: border-box; }
+.account-delete-dialog p { line-height: 1.7; }

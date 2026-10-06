@@ -20,14 +20,19 @@ let clearEffectActive = false;
 let endingSoundActive = false;
 let toastTimer;
 let stagePressTimer = null;
+let screenRevision = 0;
 // 正式なアプリアイコン。画像を差し替える場合はこのパスを変更してください。
 const LOGO_PATH = 'images/app-icon.png';
 
 function readSetup() {
-  const saved = TorequeStorage.read();
+  const official = window.TorequeOfficial;
+  if (official?.managed() && TorequeStorage.getUserId() !== window.TorequeAuth.getState().userId) return null;
+  const raw = TorequeStorage.read();
+  const saved = official?.managed() ? official.setup(raw) : raw;
   return saved && saved.completed === true && QUESTIONS.every(q => q.key === 'canJump' ? saved.answers?.canJump === undefined || typeof saved.answers.canJump === 'boolean' : q.options.includes(saved.answers?.[q.key])) ? saved : null;
 }
 function screen(html) {
+  screenRevision++;
   clearTimeout(stagePressTimer);
   stagePressTimer = null;
   cancelClearEffect();
@@ -44,9 +49,28 @@ function screen(html) {
 function titleScreen() {
   const saved = readSetup();
   screen(`<section class="title-screen"><div class="eyebrow">YOUR TRAINING QUEST</div><div class="logo-space"><img src="${LOGO_PATH}" alt="" width="160" height="160"></div><h1 class="app-name">トレクエ</h1><p class="tagline">家で、少しずつ強くなる。</p><p class="intro">今日の小さな一歩が、<br>明日のあなたを変えていく。</p><button class="primary" id="start">${saved ? 'つづける' : 'はじめる'}</button><div class="title-foot"><span>器具なし</span><i></i><span>自分のペースで</span></div></section>`);
-  document.getElementById('start').onclick = () => {
-    if (saved) { answers = { ...saved.answers }; homeScreen(); }
-    else { answers = {}; questionIndex = 0; questionScreen(); }
+  document.getElementById('start').onclick = async () => {
+    const button = document.getElementById('start');
+    if (button.disabled) return;
+    const view = screenRevision, label = button.textContent;
+    const next = () => {
+      if (view !== screenRevision) return;
+      const currentSave = readSetup();
+      if (currentSave) { answers = { ...currentSave.answers }; homeScreen(); }
+      else { answers = {}; questionIndex = 0; questionScreen(); }
+    };
+    if (!window.TorequeOfficial?.managed()) { next(); return; }
+    button.disabled = true; button.setAttribute('aria-busy', 'true');
+    const waiting = setTimeout(() => { if (view === screenRevision) button.textContent = '準備中…'; }, 600);
+    try { await window.TorequeOfficial.navigateReady(next); }
+    catch (error) {
+      if (view === screenRevision) {
+        const note = document.getElementById('toast');
+        note.textContent = error.message || '正式記録を確認できません。もう一度お試しください。'; note.hidden = false;
+      }
+    } finally {
+      clearTimeout(waiting); button.disabled = false; button.textContent = label; button.setAttribute('aria-busy', 'false');
+    }
   };
 }
 function questionScreen() {
@@ -87,8 +111,11 @@ function stageInfo(day) {
   return { ...TorequeStages.get(day), day };
 }
 function homeScreen(chapterId) {
+  if (window.TorequeOfficial?.managed() && !window.TorequeOfficial.ready()) { window.TorequeOfficial.showRecovery(); return; }
   const progress = TorequeProgress.read();
   if (progress.pending) { TorequeWorkout.restoreCompletion(progress.pending); return; }
+  if (window.TorequeOfficial?.managed() && window.TorequeOfficial.recoverActive()) return;
+  TorequeWorkout.releaseFinished();
   // 表示専用。報酬・解放・レベル計算は既存の処理を利用します。
   const current = TorequeStages.all.find(stage => progress.unlockedStages.includes(stage.id) && !progress.history[stage.id]?.completed);
   const selected = Number.isInteger(chapterId) && TorequeStages.chapters.some(chapter => chapter.id === chapterId) ? chapterId : current?.chapter || TorequeStages.chapters.at(-1).id;
@@ -167,6 +194,7 @@ function exerciseIllustrationHtml(exercise) {
 function adventureRecordsHtml(summary) {
   const stats = [['TOTAL XP', summary.xp + ' XP'], ['USER LEVEL', 'Lv.' + summary.level], ['TOTAL CLEAR DAY', summary.completedDays], ['TOTAL WORKOUT', summary.workouts], ['CURRENT STREAK', summary.streak + '日'], ['TOTAL SET', summary.sets], ['TOTAL EXERCISE', summary.exercises]];
   return '<dl class="chapter-stats">' + stats.map(([label, value]) => '<div><dt>' + label + '</dt><dd>' + value + '</dd></div>').join('') + '</dl>' +
+    (summary.referenceStats ? '<p class="review-note">SET・EXERCISEはメニューからの参考集計です。正式な実測記録はまだ保存していません。</p>' : '') +
     (summary.missingRecords ? '<p class="review-note">種目・セット数が未保存の過去記録は、その集計に含めていません。</p>' : '');
 }
 function exerciseDialogHtml() {
@@ -201,6 +229,7 @@ function getDayOnePlan() {
       Array.isArray(previous.menu) && previous.menu.length &&
       previous.menu.every(e => TorequeTraining.catalog.some(item => item.id === e.id))) return adaptSavedPlan(previous, saved.answers);
   const plan = TorequeTraining.generate(currentAnswers, saved?.categoryLevels);
+  if (window.TorequeOfficial?.managed()) return window.TorequeOfficial.remember(1, plan);
   if (saved) TorequeStorage.save({ ...saved, categoryLevels: plan.profile.levels,
     weeklyPlan: plan.profile.weekly, dayOne: plan });
   return plan;
@@ -215,9 +244,10 @@ function getStagePlan(day) {
   const preceding = TorequeStages.all.filter(stage => stage.type === 'workout');
   const previousPlans = preceding.slice(0, preceding.findIndex(stage => stage.id === day)).slice(-3).map(stage => getStagePlan(stage.id));
   const history = TorequeProgress.read().history;
-  const ratings = TorequeTraining.feedbackFromSaved(readSetup());
-  const completedCheckpoints = TorequeStages.all.filter(stage => stage.type === 'checkpoint' && history[stage.id]?.completed).map(stage => stage.id);
+  const ratings = window.TorequeOfficial?.managed() ? window.TorequeOfficial.feedback(day) : TorequeTraining.feedbackFromSaved(readSetup());
+  const completedCheckpoints = window.TorequeOfficial?.managed() ? window.TorequeOfficial.checkpointsFor(day) : TorequeStages.all.filter(stage => stage.type === 'checkpoint' && history[stage.id]?.completed).map(stage => stage.id);
   const plan = TorequeTraining.generateStage(day, saved.answers, saved.categoryLevels, previousPlans, ratings, completedCheckpoints);
+  if (window.TorequeOfficial?.managed()) return window.TorequeOfficial.remember(day, plan);
   // 旧キーも残しつつ、追加DAYは番号をキーにした共通メニュー保存を使います。
   const latest = readSetup();
   TorequeStorage.save({ ...latest, ...(legacyKey ? { [legacyKey]: plan } : {}), menus: { ...latest.menus, [day]: plan } });
@@ -232,7 +262,7 @@ function openStage(id) {
 function getBossPlan(id) {
   const stage = TorequeStages.get(id), saved = readSetup();
   if (!saved || stage?.type !== 'checkpoint') return null;
-  const ratings = TorequeTraining.feedbackFromSaved(saved);
+  const ratings = window.TorequeOfficial?.managed() ? window.TorequeOfficial.feedback(id) : TorequeTraining.feedbackFromSaved(saved);
   const feedbackKey = JSON.stringify({ levels: saved.categoryLevels,
     recent: ratings.slice(-3).map(entry => [entry.day, entry.rating, entry.completedAt]) });
   const previous = saved.bossMenus?.[id];
@@ -247,6 +277,7 @@ function getBossPlan(id) {
   const completed = TorequeStages.all.filter(item => item.type === 'checkpoint' && history[item.id]?.completed).map(item => item.id);
   const plan = TorequeTraining.generateBoss(stage, saved.answers, saved.categoryLevels, plans, ratings, completed);
   plan.feedbackKey = feedbackKey;
+  if (window.TorequeOfficial?.managed()) return window.TorequeOfficial.remember(id, plan);
   const latest = readSetup();
   TorequeStorage.save({ ...latest, bossMenus: { ...latest.bossMenus, [id]: plan } });
   return plan;
@@ -278,7 +309,7 @@ function checkpointScreen(id = 'checkpoint1') {
   const stage = TorequeStages.get(id), plan = getPlayablePlan(id);
   if (!plan) { titleScreen(); return; }
   const summary = TorequeProgress.chapterSummary(id);
-  screen(`<section class="checkpoint-screen boss-intro"><div class="eyebrow">CHAPTER ${stage.chapter} · ${stage.label}</div><h1>BOSS BATTLE</h1><img class="battle-boss" src="images/${stage.bossImage}" alt="${stage.bossName}"><h2>${stage.bossName}</h2><p class="muted">このCHAPTERのトレーニングで、ボスに挑もう。</p><p class="personalized-badge">あなた向け復習メニュー · 約${plan.estimatedMinutes}分</p><div class="battle-menu">${plan.menu.map(e => `<div><strong>${e.name}</strong>${e.focused ? '<span class="focus-badge">重点</span>' : ''}<span>${e.area} · ${e.amount} × ${e.sets}セット</span></div>`).join('')}</div><details class="battle-records"><summary>ここまでの成長を見る</summary><p>TOTAL XP ${summary.xp} · Lv.${summary.level}</p><p>${summary.completedDays} DAY CLEAR · ${summary.sets} SETS</p></details><p class="review-note">${progress.history[id]?.completed ? '再戦' : '初回'}クリア +${progress.history[id]?.completed ? TorequeProgress.clearCountFor(progress.history[id]) === 1 ? 75 : 50 : stage.reward} XP。HPは進捗を表す演出です。</p><button class="primary" id="checkpoint-confirm">BOSS BATTLE START</button><button class="secondary" id="checkpoint-home">ホームに戻る</button>${DEV_MODE ? `<button class="dev-clear-button" id="dev-checkpoint-clear">${stage.final ? 'DEV：FINAL BOSSを即クリア' : 'DEV：CHECK POINTを即クリア'}</button>` : ''}</section>`);
+  screen(`<section class="checkpoint-screen boss-intro"><div class="eyebrow">CHAPTER ${stage.chapter} · ${stage.label}</div><h1>BOSS BATTLE</h1><img class="battle-boss" src="images/${stage.bossImage}" alt="${stage.bossName}"><h2>${stage.bossName}</h2><p class="muted">このCHAPTERのトレーニングで、ボスに挑もう。</p><p class="personalized-badge">あなた向け復習メニュー · 約${plan.estimatedMinutes}分</p><div class="battle-menu">${plan.menu.map(e => `<div><strong>${e.name}</strong>${e.focused ? '<span class="focus-badge">重点</span>' : ''}<span>${e.area} · ${e.amount} × ${e.sets}セット</span></div>`).join('')}</div><details class="battle-records"><summary>ここまでの成長を見る</summary><p>TOTAL XP ${summary.xp} · Lv.${summary.level}</p><p>${summary.completedDays} DAY CLEAR · ${summary.sets} SETS</p></details><p class="review-note">${progress.history[id]?.completed ? '再戦' : '初回'}クリア +${progress.history[id]?.completed ? TorequeProgress.clearCountFor(progress.history[id]) === 1 ? 75 : 50 : stage.reward} XP。HPは進捗を表す演出です。</p><button class="primary" id="checkpoint-confirm">BOSS BATTLE START</button><button class="secondary" id="checkpoint-home">ホームに戻る</button>${DEV_MODE && !window.TorequeOfficial?.managed() ? `<button class="dev-clear-button" id="dev-checkpoint-clear">${stage.final ? 'DEV：FINAL BOSSを即クリア' : 'DEV：CHECK POINTを即クリア'}</button>` : ''}</section>`);
   let started = false;
   const begin = dev => {
     if (started || clearEffectActive) return;
@@ -286,7 +317,7 @@ function checkpointScreen(id = 'checkpoint1') {
     if (dev) TorequeWorkout.devComplete();
   };
   document.getElementById('checkpoint-confirm').onclick = () => begin(false);
-  if (DEV_MODE) document.getElementById('dev-checkpoint-clear').onclick = () => begin(true);
+  if (DEV_MODE && !window.TorequeOfficial?.managed()) document.getElementById('dev-checkpoint-clear').onclick = () => begin(true);
   document.getElementById('checkpoint-home').onclick = homeScreen;
 }
 function cancelClearEffect() {

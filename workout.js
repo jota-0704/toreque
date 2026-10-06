@@ -2,14 +2,41 @@
 const TorequeWorkout = (() => {
   let session = null, timerId, deadline = 0, running = false, generation = 0;
   let runSequence = 0;
+  let starting = false, startGeneration = 0;
+  let uiTimer;
+  function stopUiTimer() { clearTimeout(uiTimer); uiTimer = undefined; }
   const current = () => session.menu[session.index];
   function stopTimer() {
     if (running && session) session.remainingMs = Math.max(0, deadline - Date.now());
     clearTimeout(timerId); timerId = undefined; running = false; generation++;
     TorequeSound.silence();
   }
-  function cancel() { stopTimer(); session = null; }
+  function cancel(refreshAuth = true) {
+    stopTimer(); stopUiTimer(); session = null; starting = false; startGeneration++;
+    // モーダルが開いたままでも、終了済みworkoutのdisabled状態を残さない。
+    if (refreshAuth) window.TorequeAuth?.refresh();
+  }
+  function releaseFinished(refreshAuth = true) {
+    if (!session || starting || session.communicating || !['complete', 'rewards'].includes(session.phase)) return;
+    if (session.official && !window.TorequeOfficial?.ready()) return;
+    const progress = TorequeProgress.read();
+    const run = progress.history[session.stage.day]?.runs?.find(item => item.id === session.runId);
+    // ログイン中は正式記録、匿名時は既存履歴で評価保存まで確認。未評価runは保持する。
+    if (TorequeProgress.RATINGS.includes(run?.rating) && !progress.pending) cancel(refreshAuth);
+  }
+  // 読み取り専用の診断。sessionそのものや変更用参照は公開しない。
+  function getState() {
+    const progress = TorequeProgress.read();
+    const run = session && progress.history[session.stage.day]?.runs?.find(item => item.id === session.runId);
+    return { starting, phase: session?.phase || null, official: !!session?.official,
+      communicating: !!session?.communicating, stageId: session?.stage.day || null,
+      savedRating: run?.rating || null, pendingEvaluation: !!progress.pending,
+      officialReady: !!window.TorequeOfficial?.ready() };
+  }
   function start(menu, day = 1) {
+    if (starting) return;
+    if (window.TorequeOfficial?.managed()) return startOfficial(menu, day);
+    if (window.TorequeAuth?.getState().userId || window.TorequeAuth?.getState().initializing) return;
     cancel(); TorequeSound.unlock();
     if (!TorequeProgress.read().unlockedStages.includes(day) || !Array.isArray(menu) || !menu.length) { homeScreen(); return; }
     session = { menu: menu.map(e => ({ ...e })), stage: stageInfo(day),
@@ -18,25 +45,132 @@ const TorequeWorkout = (() => {
       phase: '', remainingMs: null, completedSets: 0, paused: false, modalDepth: 0, lastCount: null };
     prepareSet();
   }
+  async function startOfficial(menu, day) {
+    if (!Array.isArray(menu) || !menu.length) return;
+    cancel(); starting = true;
+    const token = startGeneration;
+    // 詳細画面を保ったままサーバーの開始許可を待つ。
+    const boss = stageInfo(day).type === 'checkpoint';
+    const button = document.getElementById(boss ? 'checkpoint-confirm' : 'training-start');
+    const back = document.getElementById(boss ? 'checkpoint-home' : 'home-back');
+    const label = button?.textContent;
+    if (button) { button.disabled = true; button.setAttribute('aria-busy', 'true'); }
+    if (back) back.disabled = true;
+    uiTimer = setTimeout(() => {
+      if (token === startGeneration && starting && button) button.textContent = '準備中…';
+    }, 600);
+    try {
+      const run = await window.TorequeOfficial.start(day);
+      if (token !== startGeneration) return;
+      stopUiTimer(); starting = false; TorequeSound.unlock();
+      session = { menu: menu.map(e => ({ ...e })), stage: stageInfo(day), runId: run.run_id, official: true,
+        index: 0, set: 1, side: 1, phase: '', remainingMs: null, completedSets: 0, paused: false, modalDepth: 0, lastCount: null };
+      prepareSet();
+    } catch {
+      if (token !== startGeneration) return;
+      starting = false; window.TorequeOfficial.showRecovery();
+    } finally {
+      if (token === startGeneration) stopUiTimer();
+      if (button) { button.disabled = false; button.textContent = label; button.setAttribute('aria-busy', 'false'); }
+      if (back) back.disabled = false;
+    }
+  }
   function enter(phase, milliseconds = null, cue = false) {
     stopTimer(); session.phase = phase; session.remainingMs = milliseconds; session.lastCount = null;
+    if (phase === 'complete' && session.official && !session.result) { submitCompletion(); return; }
     if (phase === 'complete' && !session.result) session.result = TorequeProgress.complete(session.stage.day, session.runId, new Date(),
       { sets: session.completedSets, exercises: session.menu.length, exerciseIds: session.menu.map(e => e.id) });
     render(); if (cue) TorequeSound.play('signal'); schedule();
   }
   // DEV ONLY：実行を省略し、通常のenter('complete')で報酬・記録・評価へ進みます。
   function devComplete(runId) {
-    if (!DEV_MODE || !session || session.runId !== runId || session.result ||
+    if (!DEV_MODE || window.TorequeOfficial?.managed() || !session || session.runId !== runId || session.result ||
         ['complete', 'rewards'].includes(session.phase) || session.modalDepth) return;
     session.completedSets = session.menu.reduce((sum, exercise) => sum + exercise.sets, 0);
     session.paused = false;
     enter('complete'); // 既存のタイマー・効果音cleanupもここで実行。
   }
   function restoreCompletion(result) {
+    if (window.TorequeOfficial?.managed()) {
+      const official = window.TorequeOfficial.read().pending;
+      if (!official || official.runId !== result?.runId) return;
+      result = official;
+    } else {
+      const pending = TorequeProgress.read().pending;
+      if (!pending || pending.runId !== result?.runId) { releaseFinished(); return; }
+      result = pending;
+    }
     cancel();
     session = { menu: [], stage: stageInfo(result.day), runId: result.runId, index: 0,
-      phase: 'complete', remainingMs: null, completedSets: 0, paused: false, modalDepth: 0, result };
+      phase: 'complete', remainingMs: null, completedSets: 0, paused: false, modalDepth: 0, result, official: !!window.TorequeOfficial?.managed() };
     render();
+  }
+  async function submitCompletion() {
+    const owner = session;
+    if (!owner || owner.communicating) return;
+    stopTimer(); stopUiTimer(); owner.communicating = true; owner.phase = 'saving';
+    // 最後のCLEAR表示を保つ。報酬はcomplete成功後にだけ表示する。
+    for (const id of ['workout-pause', 'workout-exit', 'workout-network-retry']) {
+      const button = document.getElementById(id); if (button) button.disabled = true;
+    }
+    uiTimer = setTimeout(() => {
+      if (session === owner && owner.communicating) {
+        const note = document.getElementById('workout-clear-message') || document.getElementById('workout-network-message');
+        if (note) note.textContent = '保存中…';
+      }
+    }, 600);
+    try {
+      const result = await TorequeProgress.complete(owner.stage.day, owner.runId);
+      if (session !== owner) return;
+      // COMPLETEは評価待ち。完了通信のbusy状態を描画へ持ち越さない。
+      stopUiTimer(); owner.communicating = false;
+      owner.result = result; owner.phase = 'complete'; owner.error = ''; render();
+    } catch (error) {
+      if (session === owner) { stopUiTimer(); owner.phase = 'saveError'; renderNetwork(error.message, submitCompletion); }
+    } finally { owner.communicating = false; }
+  }
+  function renderNetwork(text, retry = null) {
+    screen('<section class="course-screen"><h1>正式な記録を確認</h1><p id="workout-network-message" role="status"></p>' +
+      (retry ? '<button class="primary" id="workout-network-retry">同じ記録で再試行</button><button class="secondary" id="workout-network-account">記録・アカウントを確認</button>' : '') + '</section>');
+    document.getElementById('workout-network-message').textContent = text;
+    if (retry) {
+      document.getElementById('workout-network-retry').onclick = retry;
+      // セッション失効時も再ログインできる。サーバーのopenRunは消さず、再取得して復旧する。
+      document.getElementById('workout-network-account').onclick = () => { cancel(); window.TorequeOfficial.showRecovery(); };
+    }
+  }
+  function afterRating(owner) {
+    if (session !== owner) return;
+    if (owner.stage.type === 'checkpoint') {
+      const id = owner.stage.id, result = owner.result;
+      cancel(); finishBossBattle(id, result); return;
+    }
+    const nextStage = TorequeStages.next(owner.stage.day);
+    if (nextStage?.type === 'workout') getStagePlan(nextStage.id);
+    if (owner.official) { cancel(); homeScreen(); return; }
+    enter('rewards');
+  }
+  function updateRatingControls() {
+    document.querySelectorAll('[data-rating]').forEach(button => {
+      button.disabled = !!session.communicating;
+      const selected = button.dataset.rating === session.selectedRating;
+      button.classList[selected ? 'add' : 'remove']('selected');
+      button.setAttribute('aria-pressed', String(selected));
+    });
+    document.getElementById('official-rating-message').textContent = session.communicating ? '評価を保存中…' : session.error || '';
+  }
+  async function submitRating(rating) {
+    const owner = session;
+    if (!owner || owner.communicating) return;
+    owner.communicating = true; owner.selectedRating = rating; owner.error = ''; updateRatingControls();
+    try {
+      const saved = await TorequeProgress.rate(owner.stage.day, owner.runId, rating);
+      if (session !== owner) return;
+      owner.communicating = false;
+      if (saved) afterRating(owner);
+      else { owner.selectedRating = null; owner.error = '評価を保存できませんでした。もう一度選択してください。'; updateRatingControls(); }
+    } catch (error) { if (session === owner) { owner.error = error.message; owner.communicating = false; owner.selectedRating = null; updateRatingControls(); } }
+    finally { owner.communicating = false; }
   }
   function prepareSet() {
     session.side = 1;
@@ -142,7 +276,7 @@ const TorequeWorkout = (() => {
     } else if (phase === 'rest' || phase === 'restclear') {
       content = `<div class="workout-body"><h1 class="rest-title">REST</h1><p class="muted">次のセットまで</p><div class="workout-amount">${phase === 'rest' ? `<span id="countdown" role="timer" aria-label="休憩の残り秒数">${seconds}</span><small>秒</small>` : '<span class="timer-signal">NEXT SET!</span>'}</div><p class="rest-next">次：${e.name}</p>${setDisplay(e, true)}<p class="set-message" role="status">${session.paused ? '一時停止中' : phase === 'rest' ? 'ひと息ついて、体を休めよう。' : '次のセットへ進みます。'}</p></div>${phase === 'rest' ? `<button class="secondary" id="rest-skip" ${session.paused ? 'disabled' : ''}>休憩をスキップ</button>` : ''}`;
     } else if (phase === 'clear') {
-      content = `<div class="workout-body"><div class="complete-mark" aria-hidden="true">✓</div><h1>${e.name}<br><span class="red">CLEAR！</span></h1><p class="set-message" role="status">${session.paused ? '一時停止中' : 'よくできました！'}</p></div>`;
+      content = `<div class="workout-body"><div class="complete-mark" aria-hidden="true">✓</div><h1>${e.name}<br><span class="red">CLEAR！</span></h1><p id="workout-clear-message" class="set-message" role="status">${session.paused ? '一時停止中' : 'よくできました！'}</p></div>`;
     } else if (phase === 'exerciseRest') {
       const next = session.menu[session.index + 1];
       content = `<div class="workout-body"><p class="eyebrow">NEXT EXERCISE</p><h1 class="rest-title">種目間休憩</h1><div class="workout-amount"><span id="countdown" role="timer" aria-label="種目間休憩の残り秒数">${seconds}</span><small>秒</small></div><p class="rest-next">次：${next.name}</p><p class="muted">${next.amount} × ${next.sets}セット</p><p class="set-message" role="status">${session.paused ? '一時停止中' : 'ひと息ついて、次の種目の準備をしよう。'}</p></div><button class="secondary exercise-rest-skip" id="exercise-rest-skip" ${session.paused ? 'disabled' : ''}>休憩をスキップ</button>`;
@@ -163,9 +297,9 @@ const TorequeWorkout = (() => {
       content = `<div class="workout-body workout-complete"><div class="complete-mark" aria-hidden="true">✓</div><h1 class="red">WORKOUT<br>COMPLETE!</h1><p class="complete-day">${session.stage.bossName}</p>${session.result.firstClear ? '' : `<p class="eyebrow">REPLAY CLEAR</p><div class="xp-reward">+${session.result.reward} XP</div>`}<p>BOSS HP 0% — ボス戦トレーニング完了！</p></div>${rating}`;
     }
     const devLabel = bossBattle ? session.stage.final ? 'DEV：FINAL BOSSを即クリア' : 'DEV：CHECK POINTを即クリア' : 'DEV：このDAYを即クリア';
-    screen(`<section class="workout-screen workout-v2 phase-${phase} ${session.paused ? 'is-paused' : ''}">${progressHtml()}${content}${pause}${DEV_MODE && !finished ? `<button class="dev-clear-button" id="dev-day-clear">${devLabel}</button>` : ''}${exerciseDialogHtml()}<dialog class="exercise-dialog exit-dialog" id="exit-dialog" aria-labelledby="exit-title"><h2 id="exit-title">トレーニングを終了しますか？</h2><button class="primary" id="exit-cancel">トレーニングを続ける</button><button class="secondary" id="exit-confirm">終了してホームへ戻る</button></dialog></section>`);
+    screen(`<section class="workout-screen workout-v2 phase-${phase} ${session.paused ? 'is-paused' : ''}">${progressHtml()}${content}${phase === 'complete' && session.official ? '<p id="official-rating-message" role="status"></p>' : ''}${pause}${DEV_MODE && !session.official && !finished ? `<button class="dev-clear-button" id="dev-day-clear">${devLabel}</button>` : ''}${exerciseDialogHtml()}<dialog class="exercise-dialog exit-dialog" id="exit-dialog" aria-labelledby="exit-title"><h2 id="exit-title">トレーニングを終了しますか？</h2><button class="primary" id="exit-cancel">トレーニングを続ける</button><button class="secondary" id="exit-confirm">終了してホームへ戻る</button></dialog></section>`);
     // DEV ONLY：古い画面のハンドラーで別の実行をクリアできないようrunIdも確認。
-    if (DEV_MODE && !finished) {
+    if (DEV_MODE && !session.official && !finished) {
       const runId = session.runId;
       document.getElementById('dev-day-clear').onclick = () => devComplete(runId);
     }
@@ -194,33 +328,44 @@ const TorequeWorkout = (() => {
         advance();
       };
     } else if (phase === 'complete') {
+      if (session.official) document.getElementById('official-rating-message').textContent = session.communicating ? '評価を保存中…' : session.error || '';
       document.querySelectorAll('[data-rating]').forEach(button => { button.onclick = () => {
         if (session?.phase !== 'complete') return;
+        if (session.official) { submitRating(button.dataset.rating); return; }
         if (!TorequeProgress.rate(session.stage.day, session.runId, button.dataset.rating)) return;
-        if (bossBattle) {
-          const id = session.stage.id, result = session.result;
-          cancel(); finishBossBattle(id, result); return;
-        }
-        const nextStage = TorequeStages.next(session.stage.day);
-        if (nextStage?.type === 'workout') getStagePlan(nextStage.id);
-        enter('rewards');
-      }; });
+        afterRating(session);
+      }; button.disabled = !!session.communicating; });
     } else if (phase === 'rewards') document.getElementById('workout-continue').onclick = () => { cancel(); homeScreen(); };
   }
   function requestExit() {
-    if (!session) return;
+    if (!session || session.communicating || ['saving', 'saveError'].includes(session.phase)) return;
     if (session.phase === 'complete') { document.getElementById('rating-title').scrollIntoView({ block: 'center' }); return; }
     if (session.phase === 'rewards') { cancel(); homeScreen(); return; }
     const dialog = document.getElementById('exit-dialog');
+    if (!dialog) return;
     if (dialog.open) return;
     dialog.onclose = suspendForModal();
     document.getElementById('exit-cancel').onclick = () => dialog.close();
-    document.getElementById('exit-confirm').onclick = () => { dialog.onclose = null; cancel(); homeScreen(); };
+    document.getElementById('exit-confirm').onclick = () => {
+      if (session.official) { dialog.onclose = null; abandonOfficial(); return; }
+      dialog.onclose = null; cancel(); homeScreen();
+    };
     dialog.showModal();
+  }
+  async function abandonOfficial() {
+    const owner = session;
+    if (!owner || owner.communicating) return;
+    stopTimer(); owner.communicating = true; owner.paused = true; owner.modalDepth = 0;
+    renderNetwork('中断記録を確認中…');
+    try {
+      await window.TorequeOfficial.abandon(owner.runId);
+      if (session === owner) { cancel(); homeScreen(); }
+    } catch (error) { if (session === owner) renderNetwork(error.message, abandonOfficial); }
+    finally { owner.communicating = false; }
   }
   window.addEventListener('beforeunload', event => {
     if (session && !['complete', 'rewards'].includes(session.phase)) { event.preventDefault(); event.returnValue = ''; }
   });
   return { start, cancel, stopTimer, requestExit, suspendForModal, restoreCompletion,
-    devComplete() { if (session) devComplete(session.runId); }, isActive: () => !!session };
+    releaseFinished, getState, devComplete() { if (session) devComplete(session.runId); }, isActive: () => starting || !!session };
 })();
