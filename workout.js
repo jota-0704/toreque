@@ -350,7 +350,7 @@ const TorequeWorkout = (() => {
       if (session.official) { dialog.onclose = null; abandonOfficial(); return; }
       dialog.onclose = null; cancel(); homeScreen();
     };
-    dialog.showModal();
+    openDialogAtHeading(dialog, 'exit-title');
   }
   async function abandonOfficial() {
     const owner = session;

@@ -31,7 +31,7 @@ function readSetup() {
   const saved = official?.managed() ? official.setup(raw) : raw;
   return saved && saved.completed === true && QUESTIONS.every(q => q.key === 'canJump' ? saved.answers?.canJump === undefined || typeof saved.answers.canJump === 'boolean' : q.options.includes(saved.answers?.[q.key])) ? saved : null;
 }
-function screen(html) {
+function screen(html, { preservePosition = false } = {}) {
   screenRevision++;
   clearTimeout(stagePressTimer);
   stagePressTimer = null;
@@ -42,13 +42,17 @@ function screen(html) {
   clearTimeout(toastTimer);
   document.getElementById('toast').hidden = true;
   app.innerHTML = html;
-  window.scrollTo(0, 0);
-  app.focus({ preventScroll: true });
+  if (!preservePosition) {
+    window.scrollTo(0, 0);
+    app.focus({ preventScroll: true });
+  }
   window.TorequeCloud?.onScreenChange();
 }
 function titleScreen() {
+  // 起動後のAuth・正式記録・クラウド確認による同一画面の更新では位置を維持。
+  const preservePosition = app.innerHTML.includes('class="title-screen"');
   const saved = readSetup();
-  screen(`<section class="title-screen"><div class="eyebrow">YOUR TRAINING QUEST</div><div class="logo-space"><img src="${LOGO_PATH}" alt="" width="160" height="160"></div><h1 class="app-name">トレクエ</h1><p class="tagline">家で、少しずつ強くなる。</p><p class="intro">今日の小さな一歩が、<br>明日のあなたを変えていく。</p><button class="primary" id="start">${saved ? 'つづける' : 'はじめる'}</button><div class="title-foot"><span>器具なし</span><i></i><span>自分のペースで</span></div></section>`);
+  screen(`<section class="title-screen"><div class="eyebrow">YOUR TRAINING QUEST</div><div class="logo-space"><img src="${LOGO_PATH}" alt="" width="160" height="160"></div><h1 class="app-name">トレクエ</h1><p class="tagline">家で、少しずつ強くなる。</p><p class="intro">今日の小さな一歩が、<br>明日のあなたを変えていく。</p><button class="primary" id="start">${saved ? 'つづける' : 'はじめる'}</button><div class="title-foot"><span>器具なし</span><i></i><span>自分のペースで</span></div></section>`, { preservePosition });
   document.getElementById('start').onclick = async () => {
     const button = document.getElementById('start');
     if (button.disabled) return;
@@ -200,6 +204,15 @@ function adventureRecordsHtml(summary) {
 function exerciseDialogHtml() {
   return `<dialog class="exercise-dialog" id="exercise-dialog" aria-labelledby="exercise-name"><div class="eyebrow">HOW TO TRAIN</div><h2 id="exercise-name"></h2><div id="exercise-illustration"></div><h3>やり方</h3><p id="exercise-how"></p><div class="point-box"><h3>POINT</h3><p id="exercise-point"></p></div><div class="caution-box"><h3>注意</h3><p id="exercise-caution"></p></div><button class="primary" id="explanation-close">説明を閉じる</button></dialog>`;
 }
+// モーダル初期表示は見出しへ。操作ボタンのTabフォーカスは既存CSSを維持。
+function openDialogAtHeading(dialog, headingId) {
+  const heading = document.getElementById(headingId);
+  heading.tabIndex = -1;
+  heading.classList.add('dialog-initial-heading');
+  heading.setAttribute('autofocus', '');
+  dialog.showModal();
+  heading.focus({ preventScroll: true });
+}
 function showExerciseExplanation(exercise, onClose = null) {
   const dialog = document.getElementById('exercise-dialog');
   document.getElementById('exercise-name').textContent = exercise.name;
@@ -211,7 +224,7 @@ function showExerciseExplanation(exercise, onClose = null) {
   document.getElementById('exercise-caution').textContent = description.caution || ''; 
   dialog.onclose = onClose;
   document.getElementById('explanation-close').onclick = () => dialog.close();
-  dialog.showModal();
+  openDialogAtHeading(dialog, 'exercise-name');
 }
 function adaptSavedPlan(plan, currentAnswers) {
   const history = TorequeProgress.read().history;

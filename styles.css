@@ -108,7 +108,7 @@
 .workout-heading p{font-size:.9rem}
 .exercise-list{display:grid;gap:16px}
 .exercise-card{width:100%;display:flex;align-items:center;gap:14px;text-align:left;padding:20px 18px;border:2px solid var(--line);border-radius:22px;background:white;color:var(--ink);box-shadow:0 5px 0 #e4e6eb;transition:transform .15s,border-color .15s,box-shadow .15s}
-.exercise-card:hover{border-color:#f3a1ab}
+@media(hover:hover) and (pointer:fine){.exercise-card:hover{border-color:#f3a1ab}}
 .exercise-card:active{transform:translateY(3px);box-shadow:0 2px 0 #e4e6eb}
 .exercise-number{display:grid;place-items:center;width:36px;height:36px;flex-shrink:0;border-radius:12px;background:var(--pale);color:var(--red);font-size:.8rem;font-weight:800}
 .exercise-info{display:flex;flex-direction:column;gap:7px;min-width:0}
@@ -459,3 +459,9 @@
 .account-delete-dialog label { display: block; margin: 16px 0; }
 .account-delete-dialog input[type="password"] { width: 100%; padding: 14px; border: 2px solid #ddd; border-radius: 12px; box-sizing: border-box; }
 .account-delete-dialog p { line-height: 1.7; }
+
+/* UI: recovery spacing and programmatic heading focus. Keyboard button outlines remain. */
+.course-screen:has(#official-resume)>#official-resume{margin-top:24px;margin-bottom:20px}
+.course-screen:has(#official-resume)>#official-abandon{display:block;width:100%}
+#menu-title:focus,.dialog-initial-heading:focus{outline:none}
+.brand-mark,.logo-space img{clip-path:inset(.5% round 26%)}

@@ -50,13 +50,14 @@ const TorequeMenu = (() => {
   function open() {
     if (clearEffectActive || dialog.open) return;
     dialog.onclose = TorequeWorkout.suspendForModal();
+    document.getElementById('menu-map').textContent = TorequeWorkout.isActive() ? 'トレーニングへ戻る' : 'ステージマップへ戻る';
     page(); dialog.showModal();
   }
   document.getElementById('settings-open').onclick = open;
   document.getElementById('menu-close').onclick = () => dialog.close();
   document.getElementById('menu-map').onclick = () => {
     dialog.close();
-    if (TorequeWorkout.isActive()) TorequeWorkout.requestExit();
+    if (TorequeWorkout.isActive()) return; // MENUを閉じる操作では終了確認を開かない。
     else if (readSetup()) homeScreen();
     else titleScreen();
   };

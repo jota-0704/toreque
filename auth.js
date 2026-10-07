@@ -10,6 +10,7 @@
   el('auth-account').innerHTML += '<section class="cloud-panel" id="cloud-panel" hidden><h3>クラウド保存</h3><p id="cloud-status" role="status" aria-live="polite"></p><p id="cloud-message" class="auth-note"></p><div id="cloud-comparison" hidden><section class="cloud-save-card"><h4 id="cloud-local-title">この端末のデータ</h4><p id="cloud-local-summary"></p></section><section class="cloud-save-card" id="cloud-remote-card"><h4>クラウドのデータ</h4><p id="cloud-remote-summary"></p></section></div><button class="primary" id="cloud-use-local" hidden>この端末のデータを使用</button><button class="secondary" id="cloud-use-remote" hidden>クラウドのデータを使用</button><button class="secondary" id="cloud-decline" hidden>引き継がず新しい冒険を始める</button><button class="secondary" id="cloud-sync">今すぐ同期</button></section>';
   el('auth-account').innerHTML += '<button class="secondary account-delete-button" id="account-delete-open">アカウントを削除</button>';
   dialog.innerHTML += '<p id="auth-game-note" class="auth-note"></p>';
+  dialog.innerHTML += '<section id="auth-workout-summary" hidden><p id="auth-workout-email"></p><h3>クラウド保存</h3><p id="auth-workout-cloud" role="status"></p><p class="auth-note">トレーニング中はアカウントの変更はできません。トレーニングを完了するか、中断してホームへ戻ってから操作してください。</p></section>';
   el('auth-account').innerHTML += '<button class="secondary" id="auth-official-refresh" hidden>正式な記録を再確認</button>';
   const authListeners = new Set();
   const gameBusy = () => {
@@ -85,10 +86,11 @@
     return '認証できませんでした。通信環境や入力内容を確認し、もう一度お試しください。';
   }
   function render() {
+    const restricted = gameBusy();
     el('auth-title').textContent = user ? 'アカウント' : mode === 'signup' ? '新規登録' : 'ログイン';
-    el('auth-account').hidden = !user;
+    el('auth-account').hidden = !user || restricted;
     el('auth-email').textContent = user ? user.email || 'ログイン済み' : '';
-    el('auth-form').hidden = !!user;
+    el('auth-form').hidden = !!user || restricted;
     el('auth-password').autocomplete = mode === 'signup' ? 'new-password' : 'current-password';
     el('auth-submit').textContent = busy ? '処理中…' : mode === 'signup' ? '新規登録' : 'ログイン';
     el('auth-switch').textContent = mode === 'signup' ? 'すでにアカウントを持っている方 → ログイン' : 'アカウントを持っていない方 → 新規登録';
@@ -104,6 +106,16 @@
     el('auth-official-refresh').hidden = !user || !window.TorequeOfficial;
     el('auth-official-refresh').disabled = gameBusy() || busy || !!window.TorequeAccountDelete?.isBusy();
     el('account-delete-open').disabled = busy || !available || gameBusy() || !!window.TorequeAccountDelete?.isBusy();
+    el('auth-workout-summary').hidden = !restricted;
+    dialog.querySelector('.auth-note').hidden = restricted;
+    el('auth-game-note').hidden = restricted;
+    el('auth-message').hidden = restricted;
+    if (restricted) {
+      el('auth-workout-email').textContent = user ? user.email || 'ログイン済み' : '未ログインでプレイ中';
+      const cloudState = window.TorequeCloud?.getState().status;
+      const labels = { synced: '同期済み', syncing: '同期中', unsynced: '未同期', offline: 'オフライン', attention: '確認が必要', invalid: '確認が必要', deferred: '確認が必要' };
+      el('auth-workout-cloud').textContent = user ? '● ' + (labels[cloudState] || '確認中') : '端末に保存';
+    }
   }
   function tell(text, error = false) { message = text; isError = error; render(); }
   function open() {
